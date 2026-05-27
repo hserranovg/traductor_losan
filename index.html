@@ -40,7 +40,6 @@
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
   }
-
   body { overflow-x: hidden; }
 
   .brand-header {
@@ -49,6 +48,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
+    gap: 1rem;
     background: var(--bg);
   }
   .brand-logo { height: 36px; width: auto; }
@@ -60,7 +60,6 @@
     letter-spacing: 0.02em;
   }
 
-  /* Connection status badge in header */
   .conn-badge {
     display:flex;
     align-items:center;
@@ -118,10 +117,9 @@
     font-weight: 400;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    color: var(--text);
   }
   .landing-title em {
-    font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
+    font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
     font-weight: 300;
   }
@@ -130,7 +128,6 @@
     line-height: 1.7;
     color: var(--muted);
     max-width: 460px;
-    font-weight: 400;
   }
   .role-cards {
     display:flex;
@@ -159,7 +156,6 @@
     align-items:center;
     justify-content:center;
     padding: 4rem;
-    position: relative;
     overflow: hidden;
   }
   .visual-block {
@@ -185,7 +181,6 @@
     padding: 0.6rem 2.5rem;
     font-size: 0.85rem;
     font-weight: 500;
-    letter-spacing: 0.02em;
     box-shadow: 0 1px 0 rgba(0,0,0,0.04);
   }
   .visual-block-icon {
@@ -219,11 +214,7 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--line);
   }
-  .section-title {
-    font-size: 1.4rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
+  .section-title { font-size: 1.4rem; font-weight: 400; letter-spacing: -0.01em; }
   .section-title em {
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
@@ -318,19 +309,13 @@
   .meter-label {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     font-size: 0.7rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
   }
   .meter-label .level-text { color: var(--text); font-weight: 500; }
-  .meter-bars {
-    display:flex;
-    gap: 3px;
-    height: 32px;
-    align-items: flex-end;
-  }
+  .meter-bars { display:flex; gap: 3px; height: 32px; align-items: flex-end; }
   .meter-bar {
     flex: 1;
     background: var(--line);
@@ -342,7 +327,6 @@
   .lang-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
     border-top: 1px solid var(--line);
     border-left: 1px solid var(--line);
   }
@@ -350,7 +334,6 @@
     padding: 1rem 1.25rem;
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    background: var(--bg);
     cursor: pointer;
     transition: all 0.2s;
     display:flex;
@@ -382,12 +365,7 @@
   }
 
   .transcript-area { padding: 2rem 0; min-height: 200px; }
-  #transcript-text {
-    font-size: 1.15rem;
-    line-height: 1.75;
-    font-weight: 400;
-    min-height: 80px;
-  }
+  #transcript-text { font-size: 1.15rem; line-height: 1.75; min-height: 80px; }
   #final-text { color: var(--text); }
   #interim-text {
     color: var(--muted);
@@ -398,7 +376,6 @@
     color: var(--muted);
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
-    font-size: 1rem;
   }
 
   .qr-sidebar {
@@ -445,7 +422,7 @@
   }
 
   #attendee { background: var(--bg); }
-  .attendee-wrap { flex: 1; display:flex; flex-direction:column; max-width: 100%; }
+  .attendee-wrap { flex: 1; display:flex; flex-direction:column; }
   .attendee-status-bar {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--line);
@@ -539,7 +516,7 @@
     font-size: 0.85rem;
     color: var(--muted);
   }
-  .translation-feed { display:flex; flex-direction:column; gap: 0; }
+  .translation-feed { display:flex; flex-direction:column; }
   .translation-bubble {
     padding: 1.25rem 0;
     border-bottom: 1px solid var(--line);
@@ -569,8 +546,6 @@
   .bubble-translated {
     font-size: 1.05rem;
     line-height: 1.55;
-    color: var(--text);
-    font-weight: 400;
   }
 
   .waiting-state {
@@ -585,8 +560,7 @@
     color: var(--muted);
   }
   .waiting-pulse {
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px;
     border: 1px solid var(--line-dark);
     border-radius: 50%;
     display:flex;
@@ -606,13 +580,8 @@
     0% { inset: -8px; opacity:1; }
     100% { inset: -24px; opacity:0; }
   }
-  .waiting-pulse svg {
-    width: 32px; height: 32px;
-    stroke: var(--muted);
-    stroke-width: 1.2;
-    fill: none;
-  }
-  .waiting-state-title { font-size: 1rem; color: var(--text); font-weight: 400; }
+  .waiting-pulse svg { width: 32px; height: 32px; stroke: var(--muted); stroke-width: 1.2; fill: none; }
+  .waiting-state-title { font-size: 1rem; color: var(--text); }
   .waiting-state-sub {
     font-size: 0.85rem;
     color: var(--muted);
@@ -691,7 +660,6 @@
   <span class="brand-tagline">live translation</span>
 </header>
 
-<!-- LANDING -->
 <div id="landing" class="view active">
   <div class="landing-grid">
     <div class="landing-left">
@@ -729,7 +697,6 @@
   </div>
 </div>
 
-<!-- PRESENTER -->
 <div id="presenter" class="view">
   <div class="presenter-grid">
     <div class="presenter-main">
@@ -806,7 +773,6 @@
   </div>
 </div>
 
-<!-- ATTENDEE -->
 <div id="attendee" class="view">
   <div class="attendee-wrap">
     <div class="attendee-status-bar">
@@ -852,12 +818,26 @@
   </div>
 </div>
 
+<!-- Firebase SDK (CDN, compat for simplicity) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 <script>
 // ═══════════════════════════════════════════════════════
-// PieSocket realtime config (public demo credentials)
+// FIREBASE CONFIG
 // ═══════════════════════════════════════════════════════
-const PIESOCKET_CLUSTER = 'free.blr2';
-const PIESOCKET_KEY = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV';
+const firebaseConfig = {
+  apiKey: "AIzaSyAk_d6JF0NuQtd-9h8GdpK9JEtfM4qn65I",
+  authDomain: "traductorlosan.firebaseapp.com",
+  databaseURL: "https://traductorlosan-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "traductorlosan",
+  storageBucket: "traductorlosan.firebasestorage.app",
+  messagingSenderId: "883937975350",
+  appId: "1:883937975350:web:4905dde97938f1b6ca8c97"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 const LANGS = {
   en: { name: 'English',   bcp: 'en-US' },
@@ -877,17 +857,19 @@ let attendeeLang = 'en';
 let audioEnabled = true;
 let pendingQueue = [];
 let isSpeaking = false;
+let isPresenter = false;
 
-// Audio analysis (sound meter)
 let audioContext = null;
 let analyser = null;
 let micStream = null;
 let meterRAF = null;
 
-// WebSocket
-let ws = null;
-let wsReconnectTimer = null;
-let isPresenter = false;
+let messagesRef = null;
+let messagesListener = null;
+let connectedRef = null;
+let attendeesRef = null;
+let attendeesListener = null;
+let myAttendeeRef = null;
 
 (function buildBars(){
   const bars = document.getElementById('meter-bars');
@@ -926,7 +908,7 @@ function goAttendee(sid) {
 function goLanding() {
   stopRecording();
   stopMeter();
-  closeWS();
+  disconnectFirebase();
   showView('landing');
   setConnectionState(null, 'desconectado');
 }
@@ -942,69 +924,72 @@ function clearBanner() {
 }
 
 // ═══════════════════════════════════════════════════════
-// WEBSOCKET (PieSocket)
+// FIREBASE REALTIME
 // ═══════════════════════════════════════════════════════
-function connectWS(roomId, onMessage) {
+function connectFirebase(onMessage) {
   setConnectionState('connecting', 'conectando...');
 
-  const url = `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${encodeURIComponent(roomId)}?api_key=${PIESOCKET_KEY}&notify_self=0`;
-
-  try {
-    ws = new WebSocket(url);
-  } catch (err) {
-    console.error('WS construct error:', err);
-    setConnectionState('error', 'error de conexión');
-    return;
-  }
-
-  ws.onopen = () => {
-    console.log('WS connected to room', roomId);
-    setConnectionState('connected', 'conectado');
-    if (isPresenter) {
-      // Announce presence as presenter
-      try { ws.send(JSON.stringify({ type: 'presenter_online', sessionId })); } catch(_) {}
+  // Watch connection status
+  connectedRef = db.ref('.info/connected');
+  connectedRef.on('value', (snap) => {
+    if (snap.val() === true) {
+      setConnectionState('connected', 'conectado');
     } else {
-      // Attendee announces presence
-      try { ws.send(JSON.stringify({ type: 'attendee_join', sessionId })); } catch(_) {}
+      setConnectionState('connecting', 'reconectando...');
     }
-  };
+  });
 
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (onMessage) onMessage(data);
-    } catch(err) { console.error('WS parse error:', err, event.data); }
-  };
+  // Subscribe to messages for this session
+  const path = `sessions/${sessionId}/messages`;
+  messagesRef = db.ref(path);
 
-  ws.onerror = (err) => {
-    console.error('WS error:', err);
-    setConnectionState('error', 'error de red');
-  };
+  // Limit to last 50 messages and only listen for new ones after we join
+  const joinTime = Date.now();
+  messagesListener = messagesRef
+    .orderByChild('timestamp')
+    .startAt(joinTime)
+    .on('child_added', (snap) => {
+      const data = snap.val();
+      if (data && onMessage) onMessage(data);
+    });
 
-  ws.onclose = () => {
-    console.log('WS closed');
-    setConnectionState('error', 'desconectado');
-    // Auto-reconnect after 3s if still in active view
-    if (!wsReconnectTimer && (isPresenter || document.getElementById('attendee').classList.contains('active'))) {
-      wsReconnectTimer = setTimeout(() => {
-        wsReconnectTimer = null;
-        connectWS(roomId, onMessage);
-      }, 3000);
-    }
-  };
-}
-
-function sendWS(payload) {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    try { ws.send(JSON.stringify(payload)); return true; }
-    catch(err) { console.error('WS send error:', err); return false; }
+  // Track attendees if attendee
+  if (!isPresenter) {
+    myAttendeeRef = db.ref(`sessions/${sessionId}/attendees`).push();
+    myAttendeeRef.set({ joinedAt: firebase.database.ServerValue.TIMESTAMP });
+    // Remove on disconnect
+    myAttendeeRef.onDisconnect().remove();
+  } else {
+    // Presenter watches attendee count
+    attendeesRef = db.ref(`sessions/${sessionId}/attendees`);
+    attendeesListener = attendeesRef.on('value', (snap) => {
+      const count = snap.numChildren();
+      const el = document.getElementById('attendees-count');
+      if (el) el.textContent = count;
+    });
   }
-  return false;
 }
 
-function closeWS() {
-  if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
-  if (ws) { try { ws.close(); } catch(_) {} ws = null; }
+function sendFirebaseMessage(payload) {
+  if (!messagesRef) return false;
+  payload.timestamp = firebase.database.ServerValue.TIMESTAMP;
+  messagesRef.push(payload)
+    .catch(err => {
+      console.error('Firebase send error:', err);
+      setConnectionState('error', 'error al enviar');
+    });
+  return true;
+}
+
+function disconnectFirebase() {
+  if (connectedRef) { connectedRef.off(); connectedRef = null; }
+  if (messagesRef && messagesListener) { messagesRef.off('child_added', messagesListener); }
+  messagesRef = null;
+  messagesListener = null;
+  if (attendeesRef && attendeesListener) { attendeesRef.off('value', attendeesListener); }
+  attendeesRef = null;
+  attendeesListener = null;
+  if (myAttendeeRef) { myAttendeeRef.remove().catch(()=>{}); myAttendeeRef = null; }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1028,13 +1013,8 @@ function initPresenter() {
     showBanner('⚠ Estás en HTTP. El navegador bloqueará el micrófono. La página debe servirse por HTTPS.', 'error');
   }
 
-  // Connect to realtime channel
-  let attendeeCount = 0;
-  connectWS('losan-' + sessionId, (data) => {
-    if (data.type === 'attendee_join') {
-      attendeeCount++;
-      document.getElementById('attendees-count').textContent = attendeeCount;
-    }
+  connectFirebase((data) => {
+    // Presenter doesn't need to react to incoming messages (it's the sender)
   });
 }
 
@@ -1064,9 +1044,8 @@ async function startRecording() {
     return;
   }
 
-  try {
-    await startMeter();
-  } catch (err) {
+  try { await startMeter(); }
+  catch (err) {
     let msg = 'No se pudo acceder al micrófono.';
     if (err && err.name === 'NotAllowedError') {
       msg = 'Permiso de micrófono denegado. Pulsa el icono 🔒 de la barra de direcciones y permite el micrófono.';
@@ -1220,16 +1199,7 @@ function stopMeter() {
 }
 
 function broadcastText(text) {
-  const payload = {
-    type: 'transcript',
-    text,
-    timestamp: Date.now(),
-    sessionId
-  };
-  const ok = sendWS(payload);
-  if (!ok) {
-    console.warn('No se pudo enviar a los asistentes — WebSocket no conectado');
-  }
+  sendFirebaseMessage({ type: 'transcript', text });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1237,8 +1207,6 @@ function broadcastText(text) {
 // ═══════════════════════════════════════════════════════
 function initAttendee() {
   document.getElementById('attendee-session').textContent = sessionId;
-
-  // Unlock audio on iOS (must be triggered by user gesture)
   document.body.addEventListener('click', unlockSpeech, { once: true });
   document.body.addEventListener('touchstart', unlockSpeech, { once: true });
 
@@ -1250,8 +1218,7 @@ function initAttendee() {
     });
   });
 
-  // Connect to same realtime channel as presenter
-  connectWS('losan-' + sessionId, (data) => {
+  connectFirebase((data) => {
     if (data.type === 'transcript' && data.text) {
       handleIncomingText(data.text);
     }
@@ -1259,7 +1226,6 @@ function initAttendee() {
 }
 
 function unlockSpeech() {
-  // iOS requires speech synthesis to be triggered first by a user gesture
   try {
     const u = new SpeechSynthesisUtterance('');
     u.volume = 0;
@@ -1274,9 +1240,7 @@ async function handleIncomingText(originalText) {
   if (attendeeLang !== 'es') {
     textToSpeak = await translateText(originalText, attendeeLang);
   }
-
   addTranslationBubble(originalText, textToSpeak);
-
   if (audioEnabled) {
     pendingQueue.push({ text: textToSpeak, lang: attendeeLang });
     if (!isSpeaking) speakNext();
@@ -1373,7 +1337,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-window.addEventListener('beforeunload', () => { closeWS(); });
+window.addEventListener('beforeunload', () => { disconnectFirebase(); });
 </script>
 </body>
 </html>
