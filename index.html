@@ -3,447 +3,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveLang — Traducción en Vivo</title>
+<title>LOSAN — Live Translation</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+  @font-face {
+    font-family: 'DM Sans Italic';
+    src: url('DMSans-Italic.ttf') format('truetype-variations');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
 
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a26;
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --text: #e8e8f0;
-    --muted: #6b6b85;
-    --danger: #ff4466;
-    --success: #00e5a0;
-    --border: rgba(255,255,255,0.07);
+    --bg: #ffffff;
+    --surface: #fafafa;
+    --surface2: #f4f4f4;
+    --text: #0a0a0a;
+    --muted: #8a8a8a;
+    --line: #e8e8e8;
+    --line-dark: #d4d4d4;
+    --accent: #0a0a0a;
+    --danger: #c8102e;
+    --success: #1a7f5a;
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
 
-  body {
-    font-family: 'Syne', sans-serif;
+  html, body {
+    font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+  }
+
+  body {
     overflow-x: hidden;
   }
 
-  /* ── NOISE TEXTURE ── */
-  body::before {
-    content:'';
-    position:fixed;
-    inset:0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none;
-    z-index:9999;
-    opacity:0.4;
+  /* ── HEADER (LOSAN brand) ── */
+  .brand-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background: var(--bg);
+  }
+
+  .brand-logo {
+    height: 22px;
+    width: auto;
+  }
+
+  .brand-tagline {
+    font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
   }
 
   /* ── VIEWS ── */
-  .view { display:none; min-height:100vh; }
+  .view { display:none; min-height: calc(100vh - 60px); }
   .view.active { display:flex; flex-direction:column; }
 
-  /* ── LANDING ── */
+  /* ═══════════════════════════════════════════════════
+     LANDING
+     ═══════════════════════════════════════════════════ */
   #landing {
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding: 2rem;
-    background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 100%, rgba(0,229,255,0.08) 0%, transparent 50%);
+    align-items:stretch;
+    justify-content:stretch;
+    padding: 0;
   }
 
-  .landing-logo {
-    font-size: 0.75rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.3em;
-    color: var(--accent);
+  .landing-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  .landing-left {
+    padding: 5rem 4rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap: 2rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    margin-bottom: 2rem;
+    color: var(--muted);
   }
 
   .landing-title {
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
+    font-size: clamp(2.5rem, 5vw, 4.2rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
 
-  .landing-title span {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .landing-title em {
+    font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
+    font-style: italic;
+    font-weight: 300;
   }
 
   .landing-sub {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--muted);
-    max-width: 420px;
-    line-height: 1.6;
-    margin-bottom: 3rem;
+    max-width: 460px;
+    font-weight: 400;
   }
 
-  .btn-group { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+  .role-cards {
+    display:flex;
+    flex-direction:column;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    margin-top: 1rem;
+  }
 
-  .btn {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 0.9rem 2rem;
-    border: none;
-    border-radius: 0.5rem;
+  .role-card {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
+    transition: padding 0.3s ease;
   }
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent2), #5b21b6);
-    color: white;
-    box-shadow: 0 0 30px rgba(124,58,237,0.4);
+  .role-card:hover {
+    padding-left: 0.5rem;
   }
-  .btn-primary:hover { transform:translateY(-2px); box-shadow: 0 0 40px rgba(124,58,237,0.6); }
 
-  .btn-secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
+  .role-card-content h3 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
   }
-  .btn-secondary:hover { background: rgba(0,229,255,0.05); transform:translateY(-2px); }
 
-  .btn-outline {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
+  .role-card-content p {
     font-size: 0.85rem;
+    color: var(--muted);
   }
-  .btn-outline:hover { color: var(--text); border-color: var(--muted); }
 
-  /* ── PRESENTER VIEW ── */
+  .role-card-arrow {
+    font-size: 1.5rem;
+    color: var(--text);
+    transition: transform 0.3s ease;
+  }
+
+  .role-card:hover .role-card-arrow {
+    transform: translateX(8px);
+  }
+
+  .landing-right {
+    background: var(--surface);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-block {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+    overflow: hidden;
+  }
+
+  .visual-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(0,0,0,0.02) 20px, rgba(0,0,0,0.02) 21px);
+  }
+
+  .visual-block-label {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0.6rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+
+  .visual-block-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    opacity: 0.15;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PRESENTER
+     ═══════════════════════════════════════════════════ */
   #presenter {
     flex-direction: column;
   }
 
-  .topbar {
+  .presenter-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .presenter-main {
+    padding: 3rem 4rem;
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    gap: 2.5rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .section-head {
+    display:flex;
     justify-content:space-between;
-    padding: 1.2rem 2rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    align-items:baseline;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
   }
 
-  .topbar-logo {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    text-transform: uppercase;
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
-  .status-dot {
+  .section-title em {
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+  }
+
+  .status-indicator {
     display:flex;
     align-items:center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-family: 'DM Mono', monospace;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     color: var(--muted);
   }
 
   .dot {
-    width: 8px; height: 8px;
+    width: 6px; height: 6px;
     border-radius: 50%;
-    background: var(--muted);
+    background: var(--line-dark);
     transition: all 0.3s;
   }
   .dot.active {
     background: var(--danger);
-    box-shadow: 0 0 12px var(--danger);
-    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 0 4px rgba(200,16,46,0.12);
+    animation: pulse 1.8s infinite;
   }
-
   @keyframes pulse {
     0%,100% { opacity:1; }
-    50% { opacity:0.4; }
+    50% { opacity:0.5; }
   }
 
-  .presenter-body {
-    display:grid;
-    grid-template-columns: 1fr 320px;
-    gap: 0;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .presenter-main {
-    padding: 2rem;
-    display:flex;
-    flex-direction:column;
-    gap: 1.5rem;
-    overflow-y: auto;
-  }
-
+  /* MIC */
   .mic-section {
+    padding: 3rem 0;
     display:flex;
     flex-direction:column;
     align-items:center;
     gap: 1.5rem;
-    padding: 2rem;
-    background: var(--surface);
-    border-radius: 1rem;
-    border: 1px solid var(--border);
-  }
-
-  .mic-label {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.25em;
-    color: var(--muted);
-    text-transform: uppercase;
   }
 
   .mic-btn {
-    width: 100px; height: 100px;
+    width: 120px; height: 120px;
     border-radius: 50%;
-    border: none;
-    background: var(--surface2);
+    border: 1px solid var(--text);
+    background: var(--bg);
     cursor: pointer;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition: all 0.3s;
-    border: 2px solid var(--border);
+    transition: all 0.3s ease;
     position: relative;
   }
 
-  .mic-btn:hover { transform: scale(1.05); border-color: var(--accent2); }
+  .mic-btn::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+
+  .mic-btn:hover { transform: scale(1.02); }
+  .mic-btn:hover::after { border-color: var(--line); }
+
   .mic-btn.recording {
-    background: rgba(255,68,102,0.1);
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .mic-btn.recording::after {
     border-color: var(--danger);
-    box-shadow: 0 0 40px rgba(255,68,102,0.3);
-    animation: mic-pulse 2s infinite;
+    inset: -12px;
+    animation: ring-pulse 1.6s infinite;
+  }
+  @keyframes ring-pulse {
+    0%,100% { opacity:1; inset:-12px; }
+    50% { opacity:0.3; inset:-20px; }
   }
 
-  @keyframes mic-pulse {
-    0%,100% { box-shadow: 0 0 40px rgba(255,68,102,0.3); }
-    50% { box-shadow: 0 0 60px rgba(255,68,102,0.5); }
+  .mic-icon {
+    width: 36px; height: 36px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
   }
-
-  .mic-icon { font-size: 2.5rem; }
 
   .mic-status {
     font-size: 0.85rem;
     color: var(--muted);
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
   }
 
-  .lang-select-section {
-    background: var(--surface);
-    border-radius: 1rem;
-    border: 1px solid var(--border);
-    padding: 1.5rem;
-  }
-
-  .section-label {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.25em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-
+  /* LANGUAGES */
   .lang-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
   }
 
   .lang-chip {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.4rem;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-family: 'DM Mono', monospace;
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
     cursor: pointer;
     transition: all 0.2s;
-    text-align: center;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     user-select: none;
   }
 
-  .lang-chip:hover { border-color: var(--accent2); color: var(--text); }
+  .lang-chip:hover { background: var(--surface); }
+
   .lang-chip.active {
-    border-color: var(--accent);
-    background: rgba(0,229,255,0.08);
-    color: var(--accent);
+    background: var(--text);
+    color: var(--bg);
   }
 
+  .lang-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .lang-check {
+    width: 14px;
+    height: 14px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    position: relative;
+    opacity: 0.4;
+  }
+
+  .lang-chip.active .lang-check {
+    opacity: 1;
+    background: var(--bg);
+    border-color: var(--bg);
+  }
+
+  .lang-chip.active .lang-check::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: var(--text);
+    border-radius: 50%;
+  }
+
+  /* TRANSCRIPT */
   .transcript-area {
-    flex: 1;
-    background: var(--surface);
-    border-radius: 1rem;
-    border: 1px solid var(--border);
-    padding: 1.5rem;
+    padding: 2rem 0;
     min-height: 200px;
   }
 
   #transcript-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    font-weight: 400;
     min-height: 80px;
   }
 
+  #final-text { color: var(--text); }
   #interim-text {
     color: var(--muted);
+    font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
   }
 
-  /* ── QR SIDEBAR ── */
+  .transcript-empty {
+    color: var(--muted);
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  /* QR SIDEBAR */
   .qr-sidebar {
-    border-left: 1px solid var(--border);
     background: var(--surface);
-    padding: 2rem;
+    padding: 3rem 2.5rem;
+    display:flex;
+    flex-direction:column;
+    gap: 2rem;
+  }
+
+  .qr-box {
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap: 1.5rem;
-  }
-
-  .qr-title {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.25em;
-    color: var(--muted);
-    text-transform: uppercase;
-    text-align: center;
+    gap: 1.25rem;
   }
 
   #qr-code {
     background: white;
-    padding: 12px;
-    border-radius: 0.75rem;
+    padding: 16px;
+    border: 1px solid var(--line);
   }
 
-  .qr-url {
+  #qr-code img, #qr-code canvas {
+    display: block;
+  }
+
+  .qr-instruction {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+  }
+
+  .session-info {
+    border-top: 1px solid var(--line-dark);
+    padding-top: 1.5rem;
+    display:flex;
+    flex-direction:column;
+    gap: 0.6rem;
+  }
+
+  .info-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 0.8rem;
+  }
+
+  .info-label {
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
+  }
+
+  .info-value {
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .url-display {
+    font-size: 0.7rem;
     color: var(--muted);
     word-break: break-all;
-    text-align: center;
-    line-height: 1.6;
+    line-height: 1.5;
+    padding: 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
   }
 
-  .sessions-list {
-    width: 100%;
-  }
-
-  .session-item {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding: 0.6rem 0.75rem;
-    border-radius: 0.4rem;
-    background: var(--surface2);
-    margin-bottom: 0.4rem;
-    font-size: 0.8rem;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .session-lang { color: var(--accent); }
-  .session-count { color: var(--muted); }
-
-  /* ── ATTENDEE VIEW ── */
+  /* ═══════════════════════════════════════════════════
+     ATTENDEE
+     ═══════════════════════════════════════════════════ */
   #attendee {
-    background: radial-gradient(ellipse at 50% 0%, rgba(0,229,255,0.05) 0%, transparent 60%);
+    background: var(--bg);
   }
 
-  .attendee-header {
-    padding: 1.5rem 1.5rem 0;
+  .attendee-wrap {
+    flex: 1;
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    max-width: 100%;
+  }
+
+  .attendee-status-bar {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+    display:flex;
     justify-content:space-between;
+    align-items:center;
   }
 
-  .attendee-logo {
-    font-size: 0.65rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-
-  .live-badge {
+  .live-tag {
     display:flex;
     align-items:center;
-    gap: 0.4rem;
-    background: rgba(255,68,102,0.1);
-    border: 1px solid rgba(255,68,102,0.3);
-    border-radius: 2rem;
-    padding: 0.3rem 0.75rem;
+    gap: 0.5rem;
     font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    color: var(--danger);
-  }
-
-  .attendee-lang-selector {
-    padding: 1.5rem;
-  }
-
-  .attendee-lang-title {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.25em;
-    color: var(--muted);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
+    color: var(--danger);
+    font-weight: 500;
+  }
+
+  .session-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .session-tag b { color: var(--text); font-weight: 500; letter-spacing: 0.05em; }
+
+  /* LANG SELECTOR */
+  .attendee-lang-section {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attendee-lang-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
   }
 
   .lang-scroll {
     display:flex;
     gap: 0.5rem;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
     scrollbar-width: none;
   }
   .lang-scroll::-webkit-scrollbar { display:none; }
 
   .lang-pill {
     flex-shrink: 0;
-    padding: 0.5rem 1.25rem;
-    border-radius: 2rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--line-dark);
+    background: var(--bg);
+    color: var(--text);
     font-size: 0.85rem;
-    font-family: 'DM Mono', monospace;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
   }
 
-  .lang-pill:hover { border-color: var(--accent2); color: var(--text); }
+  .lang-pill:hover { background: var(--surface); }
   .lang-pill.selected {
-    background: linear-gradient(135deg, var(--accent2), #5b21b6);
-    border-color: transparent;
-    color: white;
-    box-shadow: 0 0 20px rgba(124,58,237,0.4);
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
   }
 
+  /* AUDIO ZONE */
   .audio-zone {
     flex: 1;
-    margin: 0 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 1.25rem;
     padding: 1.5rem;
     display:flex;
     flex-direction:column;
@@ -451,100 +602,104 @@
     overflow-y: auto;
   }
 
-  .audio-waveform {
+  .audio-now-playing {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--line);
     display:flex;
     align-items:center;
-    justify-content:center;
-    gap: 3px;
-    height: 48px;
-    opacity: 0;
+    gap: 1rem;
+    opacity: 0.5;
     transition: opacity 0.3s;
   }
-  .audio-waveform.playing { opacity:1; }
+  .audio-now-playing.playing { opacity: 1; }
 
+  .waveform {
+    display:flex;
+    align-items:center;
+    gap: 3px;
+    height: 28px;
+  }
   .bar {
-    width: 3px;
-    background: var(--accent);
-    border-radius: 2px;
+    width: 2px;
+    background: var(--text);
+    height: 6px;
+  }
+  .audio-now-playing.playing .bar {
     animation: wave 1.2s ease-in-out infinite;
   }
-
   @keyframes wave {
     0%,100% { height: 6px; }
-    50% { height: 32px; }
+    50% { height: 22px; }
   }
-
   .bar:nth-child(2) { animation-delay: 0.1s; }
   .bar:nth-child(3) { animation-delay: 0.2s; }
   .bar:nth-child(4) { animation-delay: 0.3s; }
   .bar:nth-child(5) { animation-delay: 0.15s; }
-  .bar:nth-child(6) { animation-delay: 0.25s; }
-  .bar:nth-child(7) { animation-delay: 0.05s; }
+
+  .now-playing-text {
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
 
   .translation-feed {
     display:flex;
     flex-direction:column;
-    gap: 0.75rem;
+    gap: 0;
   }
 
   .translation-bubble {
-    background: var(--surface2);
-    border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    border-left: 3px solid var(--accent2);
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
     animation: fadeIn 0.4s ease;
   }
 
-  .translation-bubble.speaking {
-    border-left-color: var(--accent);
-    background: rgba(0,229,255,0.05);
+  .translation-bubble:first-child {
+    padding-top: 0.5rem;
+  }
+
+  .translation-bubble.speaking .bubble-translated {
+    font-weight: 500;
   }
 
   @keyframes fadeIn {
-    from { opacity:0; transform:translateY(8px); }
+    from { opacity:0; transform:translateY(6px); }
     to { opacity:1; transform:translateY(0); }
   }
 
-  .bubble-original {
-    font-size: 0.75rem;
+  .bubble-meta {
+    display:flex;
+    align-items:center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bubble-time {
+    font-size: 0.7rem;
     color: var(--muted);
-    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .bubble-original {
+    font-size: 0.78rem;
+    color: var(--muted);
     margin-bottom: 0.4rem;
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    line-height: 1.5;
   }
 
   .bubble-translated {
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.05rem;
+    line-height: 1.55;
     color: var(--text);
+    font-weight: 400;
   }
 
-  .attendee-controls {
-    padding: 1.5rem;
-    display:flex;
-    gap: 0.75rem;
-  }
-
-  .vol-btn {
-    flex: 1;
-    padding: 0.85rem;
-    border-radius: 0.6rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .vol-btn:hover { background: var(--surface2); }
-  .vol-btn.active-audio {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0,229,255,0.05);
-  }
-
-  /* ── WAITING STATE ── */
+  /* WAITING STATE */
   .waiting-state {
     flex: 1;
     display:flex;
@@ -552,216 +707,317 @@
     align-items:center;
     justify-content:center;
     gap: 1rem;
+    padding: 4rem 1rem;
+    text-align:center;
     color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
   }
 
-  .waiting-icon {
-    font-size: 3rem;
-    opacity: 0.3;
-  }
-
-  /* ── SESSION ID SETUP ── */
-  .setup-form {
-    display:flex;
-    flex-direction:column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 340px;
-  }
-
-  .input-group {
-    display:flex;
-    flex-direction:column;
-    gap: 0.5rem;
-  }
-
-  .input-label {
-    font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .text-input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    padding: 0.85rem 1rem;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .text-input:focus { border-color: var(--accent); }
-  .text-input::placeholder { color: var(--muted); }
-
-  /* ── CHANNEL DISPLAY ── */
-  .channel-badge {
+  .waiting-pulse {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--line-dark);
+    border-radius: 50%;
     display:flex;
     align-items:center;
-    gap: 0.5rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
+    justify-content:center;
+    position: relative;
+  }
+
+  .waiting-pulse::before {
+    content:'';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    animation: expand 2s infinite;
+  }
+  @keyframes expand {
+    0% { inset: -8px; opacity:1; }
+    100% { inset: -24px; opacity:0; }
+  }
+
+  .waiting-pulse svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--muted);
+    stroke-width: 1.2;
+    fill: none;
+  }
+
+  .waiting-state-title {
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .waiting-state-sub {
+    font-size: 0.85rem;
     color: var(--muted);
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
   }
 
-  .channel-id {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 0.3rem;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.7rem;
-    color: var(--accent);
+  /* ATTENDEE CONTROLS */
+  .attendee-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--line);
+    display:flex;
+    gap: 0.75rem;
   }
 
-  /* responsive */
-  @media (max-width: 768px) {
-    .presenter-body { grid-template-columns: 1fr; }
-    .qr-sidebar { border-left: none; border-top: 1px solid var(--border); }
+  .footer-btn {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--line-dark);
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .footer-btn:hover { background: var(--surface); }
+  .footer-btn.primary {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .footer-btn.muted {
+    color: var(--muted);
+    border-color: var(--line);
+    text-decoration: line-through;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .landing-grid { grid-template-columns: 1fr; }
+    .landing-right { display: none; }
+    .landing-left { padding: 3rem 2rem; }
+    .presenter-grid { grid-template-columns: 1fr; }
+    .qr-sidebar { border-top: 1px solid var(--line); }
+    .presenter-main { padding: 2rem 1.5rem; border-right: none; }
     .lang-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .brand-header { padding: 1rem 1.5rem; }
+    .brand-tagline { display: none; }
+    .lang-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
+<!-- ════════════════════════════ BRAND HEADER ════════════════════════════ -->
+<header class="brand-header">
+  <img src="logo.png" alt="LOSAN" class="brand-logo">
+  <span class="brand-tagline">live translation</span>
+</header>
+
 <!-- ════════════════════════════ LANDING ════════════════════════════ -->
 <div id="landing" class="view active">
-  <div class="landing-logo">LiveLang — Convention Translation</div>
-  <h1 class="landing-title">Habla.<br><span>El mundo escucha.</span></h1>
-  <p class="landing-sub">Traducción en tiempo real para convenciones. Sin apps, sin registro. Solo escanea y escucha.</p>
-  <div class="btn-group">
-    <button class="btn btn-primary" onclick="goPresenter()">🎤 Soy el presentador</button>
-    <button class="btn btn-secondary" onclick="goAttendee()">👂 Soy asistente</button>
+  <div class="landing-grid">
+    <div class="landing-left">
+      <div class="eyebrow">Convention Translation System</div>
+      <h1 class="landing-title">Habla.<br><em>El mundo escucha.</em></h1>
+      <p class="landing-sub">Traducción simultánea para convenciones. Sin apps. Sin registro. Sin instalaciones. Solo escanea y escucha en tu idioma.</p>
+
+      <div class="role-cards">
+        <div class="role-card" onclick="goPresenter()">
+          <div class="role-card-content">
+            <h3>Presentador</h3>
+            <p>Hablar al público y generar QR de acceso</p>
+          </div>
+          <span class="role-card-arrow">→</span>
+        </div>
+        <div class="role-card" onclick="goAttendee()">
+          <div class="role-card-content">
+            <h3>Asistente</h3>
+            <p>Escuchar la traducción en mi idioma</p>
+          </div>
+          <span class="role-card-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="landing-right">
+      <div class="visual-block">
+        <svg class="visual-block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        <div class="visual-block-label">Live</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ════════════════════════════ PRESENTER ════════════════════════════ -->
 <div id="presenter" class="view">
-  <div class="topbar">
-    <div class="topbar-logo">LiveLang</div>
-    <div class="channel-badge">
-      SESIÓN <span class="channel-id" id="session-display">—</span>
-    </div>
-    <div class="status-dot">
-      <div class="dot" id="rec-dot"></div>
-      <span id="rec-label">PARADO</span>
-    </div>
-  </div>
-
-  <div class="presenter-body">
+  <div class="presenter-grid">
     <div class="presenter-main">
 
-      <!-- MIC CONTROL -->
+      <!-- SECTION: STATUS -->
+      <div class="section-head">
+        <h2 class="section-title">Panel del <em>presentador</em></h2>
+        <div class="status-indicator">
+          <span class="dot" id="rec-dot"></span>
+          <span id="rec-label">En espera</span>
+        </div>
+      </div>
+
+      <!-- MIC -->
       <div class="mic-section">
-        <div class="mic-label">Control de micrófono</div>
         <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
-          <span class="mic-icon">🎙️</span>
+          <svg class="mic-icon" viewBox="0 0 24 24">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
         </button>
-        <div class="mic-status" id="mic-status">Pulsa para iniciar la retransmisión</div>
+        <p class="mic-status" id="mic-status">Pulsa el micrófono para empezar</p>
       </div>
 
       <!-- LANGUAGES -->
-      <div class="lang-select-section">
-        <div class="section-label">Idiomas activos para los asistentes</div>
-        <div class="lang-grid">
-          <div class="lang-chip active" data-lang="en" onclick="toggleLang(this)">🇬🇧 Inglés</div>
-          <div class="lang-chip active" data-lang="fr" onclick="toggleLang(this)">🇫🇷 Francés</div>
-          <div class="lang-chip active" data-lang="de" onclick="toggleLang(this)">🇩🇪 Alemán</div>
-          <div class="lang-chip active" data-lang="it" onclick="toggleLang(this)">🇮🇹 Italiano</div>
-          <div class="lang-chip active" data-lang="pt" onclick="toggleLang(this)">🇵🇹 Portugués</div>
-          <div class="lang-chip active" data-lang="ca" onclick="toggleLang(this)">🏴 Catalán</div>
+      <div>
+        <div class="section-head">
+          <h2 class="section-title">Idiomas <em>disponibles</em></h2>
+          <span class="status-indicator">para los asistentes</span>
+        </div>
+        <div class="lang-grid" id="lang-grid">
+          <div class="lang-chip active" data-lang="en" onclick="toggleLang(this)">
+            <span class="lang-name">English</span><span class="lang-check"></span>
+          </div>
+          <div class="lang-chip active" data-lang="fr" onclick="toggleLang(this)">
+            <span class="lang-name">Français</span><span class="lang-check"></span>
+          </div>
+          <div class="lang-chip active" data-lang="de" onclick="toggleLang(this)">
+            <span class="lang-name">Deutsch</span><span class="lang-check"></span>
+          </div>
+          <div class="lang-chip active" data-lang="it" onclick="toggleLang(this)">
+            <span class="lang-name">Italiano</span><span class="lang-check"></span>
+          </div>
+          <div class="lang-chip active" data-lang="pt" onclick="toggleLang(this)">
+            <span class="lang-name">Português</span><span class="lang-check"></span>
+          </div>
+          <div class="lang-chip active" data-lang="ca" onclick="toggleLang(this)">
+            <span class="lang-name">Català</span><span class="lang-check"></span>
+          </div>
         </div>
       </div>
 
       <!-- TRANSCRIPT -->
-      <div class="transcript-area">
-        <div class="section-label">Transcripción en vivo</div>
-        <div id="transcript-text">
-          <span id="final-text" style="color:var(--text)"></span>
-          <span id="interim-text"></span>
+      <div>
+        <div class="section-head">
+          <h2 class="section-title">Transcripción <em>en vivo</em></h2>
+          <span class="status-indicator">Español</span>
+        </div>
+        <div class="transcript-area">
+          <div id="transcript-text">
+            <span class="transcript-empty" id="empty-msg">El texto aparecerá aquí cuando empieces a hablar...</span>
+            <span id="final-text"></span>
+            <span id="interim-text"></span>
+          </div>
         </div>
       </div>
 
     </div>
 
     <!-- QR SIDEBAR -->
-    <div class="qr-sidebar">
-      <div class="qr-title">QR para asistentes</div>
-      <div id="qr-code"></div>
-      <div class="qr-url" id="attendee-url-display">—</div>
-      <div class="section-label" style="margin-top:0.5rem">Conectados</div>
-      <div class="sessions-list" id="sessions-list">
-        <div style="font-size:0.75rem; font-family:'DM Mono',monospace; color:var(--muted); text-align:center;">
-          Esperando asistentes...
+    <aside class="qr-sidebar">
+      <div class="qr-box">
+        <div class="eyebrow">Acceso para asistentes</div>
+        <div id="qr-code"></div>
+        <p class="qr-instruction">Escanea con la cámara<br>de tu móvil</p>
+      </div>
+
+      <div class="session-info">
+        <div class="info-row">
+          <span class="info-label">Sesión</span>
+          <span class="info-value" id="session-display">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Estado</span>
+          <span class="info-value" id="state-display">Inactivo</span>
         </div>
       </div>
-    </div>
+
+      <div class="url-display" id="attendee-url-display">—</div>
+    </aside>
   </div>
 </div>
 
 <!-- ════════════════════════════ ATTENDEE ════════════════════════════ -->
 <div id="attendee" class="view">
-  <div class="attendee-header">
-    <div class="attendee-logo">LiveLang</div>
-    <div class="live-badge">
-      <div class="dot active"></div>
-      EN DIRECTO
-    </div>
-  </div>
+  <div class="attendee-wrap">
 
-  <!-- LANG SELECTOR -->
-  <div class="attendee-lang-selector">
-    <div class="attendee-lang-title">Escuchar en</div>
-    <div class="lang-scroll" id="attendee-lang-scroll">
-      <div class="lang-pill selected" data-lang="en">🇬🇧 Inglés</div>
-      <div class="lang-pill" data-lang="fr">🇫🇷 Francés</div>
-      <div class="lang-pill" data-lang="de">🇩🇪 Alemán</div>
-      <div class="lang-pill" data-lang="it">🇮🇹 Italiano</div>
-      <div class="lang-pill" data-lang="pt">🇵🇹 Portugués</div>
-      <div class="lang-pill" data-lang="ca">🏴 Catalán</div>
-      <div class="lang-pill" data-lang="es">🇪🇸 Original (ES)</div>
+    <div class="attendee-status-bar">
+      <div class="live-tag">
+        <span class="dot active"></span>
+        En directo
+      </div>
+      <div class="session-tag">Sesión <b id="attendee-session">—</b></div>
     </div>
-  </div>
 
-  <!-- AUDIO ZONE -->
-  <div class="audio-zone" id="audio-zone">
-    <div class="audio-waveform" id="waveform">
-      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-    <div class="translation-feed" id="translation-feed">
-      <div class="waiting-state" id="waiting-msg">
-        <div class="waiting-icon">👂</div>
-        <div>Esperando al presentador...</div>
-        <div style="font-size:0.75rem; opacity:0.6;">El audio aparecerá aquí cuando empiece</div>
+    <div class="attendee-lang-section">
+      <div class="attendee-lang-label">Escuchar en</div>
+      <div class="lang-scroll" id="attendee-lang-scroll">
+        <div class="lang-pill selected" data-lang="en">English</div>
+        <div class="lang-pill" data-lang="fr">Français</div>
+        <div class="lang-pill" data-lang="de">Deutsch</div>
+        <div class="lang-pill" data-lang="it">Italiano</div>
+        <div class="lang-pill" data-lang="pt">Português</div>
+        <div class="lang-pill" data-lang="ca">Català</div>
+        <div class="lang-pill" data-lang="es">Español (original)</div>
       </div>
     </div>
-  </div>
 
-  <!-- CONTROLS -->
-  <div class="attendee-controls">
-    <button class="vol-btn active-audio" id="audio-toggle" onclick="toggleAudio()">🔊 Audio activado</button>
-    <button class="vol-btn" onclick="goLanding()">← Salir</button>
+    <div class="audio-zone" id="audio-zone">
+
+      <div class="audio-now-playing" id="now-playing">
+        <div class="waveform">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div>
+        </div>
+        <span class="now-playing-text">Reproduciendo traducción...</span>
+      </div>
+
+      <div class="translation-feed" id="translation-feed">
+        <div class="waiting-state" id="waiting-msg">
+          <div class="waiting-pulse">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+            </svg>
+          </div>
+          <div class="waiting-state-title">Esperando al presentador</div>
+          <div class="waiting-state-sub">El audio traducido aparecerá aquí en cuanto empiece</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="attendee-footer">
+      <button class="footer-btn primary" id="audio-toggle" onclick="toggleAudio()">Audio activado</button>
+      <button class="footer-btn" onclick="goLanding()">Salir</button>
+    </div>
+
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════
 const LANGS = {
-  en: { name: 'Inglés',    flag: '🇬🇧', bcp: 'en-US' },
-  fr: { name: 'Francés',   flag: '🇫🇷', bcp: 'fr-FR' },
-  de: { name: 'Alemán',    flag: '🇩🇪', bcp: 'de-DE' },
-  it: { name: 'Italiano',  flag: '🇮🇹', bcp: 'it-IT' },
-  pt: { name: 'Portugués', flag: '🇵🇹', bcp: 'pt-PT' },
-  ca: { name: 'Catalán',   flag: '🏴', bcp: 'ca-ES' },
-  es: { name: 'Español',   flag: '🇪🇸', bcp: 'es-ES' },
+  en: { name: 'English',   bcp: 'en-US' },
+  fr: { name: 'Français',  bcp: 'fr-FR' },
+  de: { name: 'Deutsch',   bcp: 'de-DE' },
+  it: { name: 'Italiano',  bcp: 'it-IT' },
+  pt: { name: 'Português', bcp: 'pt-PT' },
+  ca: { name: 'Català',    bcp: 'ca-ES' },
+  es: { name: 'Español',   bcp: 'es-ES' },
 };
 
 let sessionId = generateId();
@@ -773,13 +1029,8 @@ let audioEnabled = true;
 let pendingQueue = [];
 let isSpeaking = false;
 
-// BroadcastChannel for same-device communication
-// For real multi-device use, we use localStorage events
-const CHANNEL_KEY = 'livelang_' + sessionId;
+const CHANNEL_KEY = 'losan_livelang_msg';
 
-// ═══════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -801,22 +1052,16 @@ function goLanding() {
   showView('landing');
 }
 
-// ═══════════════════════════════════════════════════════
-// PRESENTER
-// ═══════════════════════════════════════════════════════
 function initPresenter() {
   document.getElementById('session-display').textContent = sessionId;
-  
   const attendeeURL = buildAttendeeURL();
   document.getElementById('attendee-url-display').textContent = attendeeURL;
-  
-  // Generate QR
   document.getElementById('qr-code').innerHTML = '';
   new QRCode(document.getElementById('qr-code'), {
     text: attendeeURL,
-    width: 200,
-    height: 200,
-    colorDark: '#000000',
+    width: 180,
+    height: 180,
+    colorDark: '#0a0a0a',
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.M
   });
@@ -859,8 +1104,10 @@ function startRecording() {
     isRecording = true;
     document.getElementById('mic-btn').classList.add('recording');
     document.getElementById('rec-dot').classList.add('active');
-    document.getElementById('rec-label').textContent = 'EN DIRECTO';
+    document.getElementById('rec-label').textContent = 'En directo';
     document.getElementById('mic-status').textContent = 'Escuchando... habla con normalidad';
+    document.getElementById('state-display').textContent = 'Retransmitiendo';
+    document.getElementById('empty-msg')?.remove();
   };
 
   recognition.onresult = (e) => {
@@ -883,58 +1130,46 @@ function startRecording() {
   recognition.onerror = (e) => {
     if (e.error === 'no-speech') return;
     console.error('Speech error:', e.error);
+    document.getElementById('mic-status').textContent = 'Error: ' + e.error;
   };
 
   recognition.onend = () => {
-    if (isRecording) recognition.start(); // auto-restart
+    if (isRecording) {
+      try { recognition.start(); } catch(_) {}
+    }
   };
 
-  recognition.start();
+  try { recognition.start(); } catch(err) { console.error(err); }
 }
 
 function stopRecording() {
   isRecording = false;
-  if (recognition) { recognition.stop(); recognition = null; }
+  if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
   document.getElementById('rec-dot')?.classList.remove('active');
-  document.getElementById('rec-label').textContent = 'PARADO';
-  document.getElementById('mic-status').textContent = 'Pulsa para iniciar la retransmisión';
+  const recLabel = document.getElementById('rec-label');
+  if (recLabel) recLabel.textContent = 'En espera';
+  const micStatus = document.getElementById('mic-status');
+  if (micStatus) micStatus.textContent = 'Pulsa el micrófono para empezar';
+  const stateDisp = document.getElementById('state-display');
+  if (stateDisp) stateDisp.textContent = 'Inactivo';
 }
 
 function broadcastText(text) {
-  // Store in localStorage for cross-tab communication
   const payload = {
     text,
     timestamp: Date.now(),
     langs: Array.from(activeLangs),
-    sessionId
+    sessionId,
+    nonce: Math.random()
   };
   localStorage.setItem(CHANNEL_KEY, JSON.stringify(payload));
-  
-  // Also update connected sessions display (simulated)
-  updateSessionsDisplay();
 }
 
-function updateSessionsDisplay() {
-  const el = document.getElementById('sessions-list');
-  const langs = Array.from(activeLangs);
-  if (!langs.length) { el.innerHTML = '<div style="font-size:0.75rem;font-family:DM Mono,monospace;color:var(--muted);text-align:center">Sin idiomas activos</div>'; return; }
-  el.innerHTML = langs.map(l => `
-    <div class="session-item">
-      <span class="session-lang">${LANGS[l]?.flag} ${LANGS[l]?.name}</span>
-      <span class="session-count">activo</span>
-    </div>
-  `).join('');
-}
-
-// ═══════════════════════════════════════════════════════
-// ATTENDEE
-// ═══════════════════════════════════════════════════════
 function initAttendee() {
-  // Listen for new broadcasts
+  document.getElementById('attendee-session').textContent = sessionId;
   window.addEventListener('storage', onStorageEvent);
-  
-  // Setup lang pills
+
   document.querySelectorAll('.lang-pill').forEach(p => {
     p.addEventListener('click', () => {
       document.querySelectorAll('.lang-pill').forEach(x => x.classList.remove('selected'));
@@ -945,9 +1180,7 @@ function initAttendee() {
 }
 
 function onStorageEvent(e) {
-  if (!e.key || !e.key.startsWith('livelang_')) return;
-  
-  // Accept messages from any session (for demo) or specific session
+  if (e.key !== CHANNEL_KEY) return;
   try {
     const data = JSON.parse(e.newValue);
     if (!data || !data.text) return;
@@ -959,15 +1192,12 @@ async function handleIncomingText(originalText) {
   document.getElementById('waiting-msg')?.remove();
 
   let textToSpeak = originalText;
-  
   if (attendeeLang !== 'es') {
     textToSpeak = await translateText(originalText, attendeeLang);
   }
 
-  // Add bubble to feed
   addTranslationBubble(originalText, textToSpeak);
 
-  // Enqueue for TTS
   if (audioEnabled) {
     pendingQueue.push({ text: textToSpeak, lang: attendeeLang });
     if (!isSpeaking) speakNext();
@@ -983,51 +1213,61 @@ async function translateText(text, targetLang) {
       return data.responseData.translatedText;
     }
   } catch(err) { console.error('Translation error:', err); }
-  return text; // fallback: original
+  return text;
 }
 
 function addTranslationBubble(original, translated) {
   const feed = document.getElementById('translation-feed');
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
   const bubble = document.createElement('div');
   bubble.className = 'translation-bubble speaking';
   bubble.innerHTML = `
-    <div class="bubble-original">ES: ${original}</div>
-    <div class="bubble-translated">${translated}</div>
+    <div class="bubble-meta">
+      <span class="bubble-time">${timeStr}</span>
+    </div>
+    <div class="bubble-original">${escapeHtml(original)}</div>
+    <div class="bubble-translated">${escapeHtml(translated)}</div>
   `;
   feed.prepend(bubble);
-  setTimeout(() => bubble.classList.remove('speaking'), 3000);
+  setTimeout(() => bubble.classList.remove('speaking'), 3500);
 
-  // Keep max 10 bubbles
   const bubbles = feed.querySelectorAll('.translation-bubble');
-  if (bubbles.length > 10) bubbles[bubbles.length - 1].remove();
+  if (bubbles.length > 15) bubbles[bubbles.length - 1].remove();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function speakNext() {
-  if (!pendingQueue.length) { 
-    isSpeaking = false; 
-    document.getElementById('waveform').classList.remove('playing');
-    return; 
+  if (!pendingQueue.length) {
+    isSpeaking = false;
+    document.getElementById('now-playing').classList.remove('playing');
+    return;
   }
-  
+
   isSpeaking = true;
-  document.getElementById('waveform').classList.add('playing');
-  
+  document.getElementById('now-playing').classList.add('playing');
+
   const { text, lang } = pendingQueue.shift();
   const bcp = LANGS[lang]?.bcp || 'en-US';
-  
+
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = bcp;
-  utter.rate = 0.95;
+  utter.rate = 0.97;
   utter.pitch = 1.0;
-  
-  // Try to find a matching voice
+
   const voices = speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang) || v.lang.startsWith(bcp.split('-')[0]));
   if (match) utter.voice = match;
-  
+
   utter.onend = () => speakNext();
   utter.onerror = () => speakNext();
-  
+
   speechSynthesis.speak(utter);
 }
 
@@ -1038,26 +1278,23 @@ function toggleAudio() {
     speechSynthesis.cancel();
     pendingQueue = [];
     isSpeaking = false;
-    document.getElementById('waveform').classList.remove('playing');
-    btn.textContent = '🔇 Audio silenciado';
-    btn.classList.remove('active-audio');
+    document.getElementById('now-playing').classList.remove('playing');
+    btn.textContent = 'Audio silenciado';
+    btn.classList.remove('primary');
+    btn.classList.add('muted');
   } else {
-    btn.textContent = '🔊 Audio activado';
-    btn.classList.add('active-audio');
+    btn.textContent = 'Audio activado';
+    btn.classList.add('primary');
+    btn.classList.remove('muted');
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════
 function generateId() {
   return Math.random().toString(36).substr(2, 6).toUpperCase();
 }
 
-// Load voices async
 speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
 
-// Check URL params on load
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const joinId = params.get('join');
