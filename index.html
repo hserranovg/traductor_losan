@@ -41,11 +41,8 @@
     min-height: 100vh;
   }
 
-  body {
-    overflow-x: hidden;
-  }
+  body { overflow-x: hidden; }
 
-  /* ── BRAND HEADER ── */
   .brand-header {
     padding: 1.75rem 2rem;
     border-bottom: 1px solid var(--line);
@@ -54,12 +51,7 @@
     justify-content:space-between;
     background: var(--bg);
   }
-
-  .brand-logo {
-    height: 36px;
-    width: auto;
-  }
-
+  .brand-logo { height: 36px; width: auto; }
   .brand-tagline {
     font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
     font-style: italic;
@@ -68,26 +60,44 @@
     letter-spacing: 0.02em;
   }
 
-  /* ── VIEWS ── */
+  /* Connection status badge in header */
+  .conn-badge {
+    display:flex;
+    align-items:center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+  .conn-badge .conn-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--line-dark);
+    transition: all 0.3s;
+  }
+  .conn-badge.connected .conn-dot {
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(26,127,90,0.15);
+  }
+  .conn-badge.connecting .conn-dot {
+    background: #d4af37;
+    animation: pulse 1s infinite;
+  }
+  .conn-badge.error .conn-dot { background: var(--danger); }
+
   .view { display:none; min-height: calc(100vh - 90px); }
   .view.active { display:flex; flex-direction:column; }
 
-  /* ═══════════════════════════════════════════════════
-     LANDING
-     ═══════════════════════════════════════════════════ */
-  #landing {
-    align-items:stretch;
-    justify-content:stretch;
-    padding: 0;
-  }
-
+  #landing { align-items:stretch; justify-content:stretch; padding: 0; }
   .landing-grid {
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - 90px);
   }
-
   .landing-left {
     padding: 5rem 4rem;
     display:flex;
@@ -96,7 +106,6 @@
     gap: 2rem;
     border-right: 1px solid var(--line);
   }
-
   .eyebrow {
     font-size: 0.7rem;
     font-weight: 500;
@@ -104,7 +113,6 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .landing-title {
     font-size: clamp(2.5rem, 5vw, 4.2rem);
     font-weight: 400;
@@ -112,13 +120,11 @@
     letter-spacing: -0.02em;
     color: var(--text);
   }
-
   .landing-title em {
     font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
     font-style: italic;
     font-weight: 300;
   }
-
   .landing-sub {
     font-size: 1rem;
     line-height: 1.7;
@@ -126,7 +132,6 @@
     max-width: 460px;
     font-weight: 400;
   }
-
   .role-cards {
     display:flex;
     flex-direction:column;
@@ -134,7 +139,6 @@
     border-top: 1px solid var(--line);
     margin-top: 1rem;
   }
-
   .role-card {
     padding: 1.5rem 0;
     border-bottom: 1px solid var(--line);
@@ -144,32 +148,11 @@
     cursor: pointer;
     transition: padding 0.3s ease;
   }
-
-  .role-card:hover {
-    padding-left: 0.5rem;
-  }
-
-  .role-card-content h3 {
-    font-size: 1.15rem;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-  }
-
-  .role-card-content p {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .role-card-arrow {
-    font-size: 1.5rem;
-    color: var(--text);
-    transition: transform 0.3s ease;
-  }
-
-  .role-card:hover .role-card-arrow {
-    transform: translateX(8px);
-  }
-
+  .role-card:hover { padding-left: 0.5rem; }
+  .role-card-content h3 { font-size: 1.15rem; font-weight: 500; margin-bottom: 0.25rem; }
+  .role-card-content p { font-size: 0.85rem; color: var(--muted); }
+  .role-card-arrow { font-size: 1.5rem; transition: transform 0.3s ease; }
+  .role-card:hover .role-card-arrow { transform: translateX(8px); }
   .landing-right {
     background: var(--surface);
     display:flex;
@@ -179,7 +162,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .visual-block {
     position: relative;
     width: 100%;
@@ -188,14 +170,12 @@
     background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
     overflow: hidden;
   }
-
   .visual-block::before {
     content: '';
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(0,0,0,0.02) 20px, rgba(0,0,0,0.02) 21px);
   }
-
   .visual-block-label {
     position: absolute;
     bottom: 24px;
@@ -208,7 +188,6 @@
     letter-spacing: 0.02em;
     box-shadow: 0 1px 0 rgba(0,0,0,0.04);
   }
-
   .visual-block-icon {
     position: absolute;
     top: 50%;
@@ -219,20 +198,13 @@
     opacity: 0.15;
   }
 
-  /* ═══════════════════════════════════════════════════
-     PRESENTER
-     ═══════════════════════════════════════════════════ */
-  #presenter {
-    flex-direction: column;
-  }
-
+  #presenter { flex-direction: column; }
   .presenter-grid {
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 380px;
     min-height: calc(100vh - 90px);
   }
-
   .presenter-main {
     padding: 3rem 4rem;
     display:flex;
@@ -240,7 +212,6 @@
     gap: 2.5rem;
     border-right: 1px solid var(--line);
   }
-
   .section-head {
     display:flex;
     justify-content:space-between;
@@ -248,20 +219,17 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--line);
   }
-
   .section-title {
     font-size: 1.4rem;
     font-weight: 400;
     letter-spacing: -0.01em;
   }
-
   .section-title em {
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
     font-weight: 300;
     color: var(--muted);
   }
-
   .status-indicator {
     display:flex;
     align-items:center;
@@ -271,7 +239,6 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .dot {
     width: 6px; height: 6px;
     border-radius: 50%;
@@ -283,12 +250,8 @@
     box-shadow: 0 0 0 4px rgba(200,16,46,0.12);
     animation: pulse 1.8s infinite;
   }
-  @keyframes pulse {
-    0%,100% { opacity:1; }
-    50% { opacity:0.5; }
-  }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
-  /* MIC */
   .mic-section {
     padding: 2rem 0 3rem;
     display:flex;
@@ -296,7 +259,6 @@
     align-items:center;
     gap: 1.5rem;
   }
-
   .mic-btn-wrap {
     position: relative;
     width: 180px;
@@ -305,7 +267,6 @@
     align-items:center;
     justify-content:center;
   }
-
   .mic-level-ring {
     position: absolute;
     inset: 0;
@@ -315,11 +276,7 @@
     transform: scale(1);
     pointer-events: none;
   }
-
-  .mic-btn-wrap.recording .mic-level-ring {
-    border-color: var(--danger);
-  }
-
+  .mic-btn-wrap.recording .mic-level-ring { border-color: var(--danger); }
   .mic-btn {
     width: 120px; height: 120px;
     border-radius: 50%;
@@ -333,22 +290,13 @@
     position: relative;
     z-index: 2;
   }
-
   .mic-btn:hover { transform: scale(1.02); }
-
   .mic-btn.recording {
     background: var(--text);
     color: var(--bg);
     border-color: var(--text);
   }
-
-  .mic-icon {
-    width: 36px; height: 36px;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    fill: none;
-  }
-
+  .mic-icon { width: 36px; height: 36px; stroke: currentColor; stroke-width: 1.5; fill: none; }
   .mic-status {
     font-size: 0.95rem;
     color: var(--muted);
@@ -356,8 +304,6 @@
     font-style: italic;
     text-align:center;
   }
-
-  /* SOUND METER */
   .sound-meter {
     width: 100%;
     max-width: 480px;
@@ -368,9 +314,7 @@
     opacity: 0.4;
     transition: opacity 0.3s;
   }
-
   .sound-meter.active { opacity: 1; }
-
   .meter-label {
     display:flex;
     justify-content:space-between;
@@ -380,19 +324,13 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
-  .meter-label .level-text {
-    color: var(--text);
-    font-weight: 500;
-  }
-
+  .meter-label .level-text { color: var(--text); font-weight: 500; }
   .meter-bars {
     display:flex;
     gap: 3px;
     height: 32px;
     align-items: flex-end;
   }
-
   .meter-bar {
     flex: 1;
     background: var(--line);
@@ -401,7 +339,6 @@
     height: 6px;
   }
 
-  /* LANGUAGES */
   .lang-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -409,7 +346,6 @@
     border-top: 1px solid var(--line);
     border-left: 1px solid var(--line);
   }
-
   .lang-chip {
     padding: 1rem 1.25rem;
     border-right: 1px solid var(--line);
@@ -422,34 +358,21 @@
     justify-content:space-between;
     user-select: none;
   }
-
   .lang-chip:hover { background: var(--surface); }
-
-  .lang-chip.active {
-    background: var(--text);
-    color: var(--bg);
-  }
-
-  .lang-name {
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
+  .lang-chip.active { background: var(--text); color: var(--bg); }
+  .lang-name { font-size: 0.9rem; font-weight: 500; }
   .lang-check {
-    width: 14px;
-    height: 14px;
+    width: 14px; height: 14px;
     border: 1px solid currentColor;
     border-radius: 50%;
     position: relative;
     opacity: 0.4;
   }
-
   .lang-chip.active .lang-check {
     opacity: 1;
     background: var(--bg);
     border-color: var(--bg);
   }
-
   .lang-chip.active .lang-check::after {
     content: '';
     position: absolute;
@@ -458,26 +381,19 @@
     border-radius: 50%;
   }
 
-  /* TRANSCRIPT */
-  .transcript-area {
-    padding: 2rem 0;
-    min-height: 200px;
-  }
-
+  .transcript-area { padding: 2rem 0; min-height: 200px; }
   #transcript-text {
     font-size: 1.15rem;
     line-height: 1.75;
     font-weight: 400;
     min-height: 80px;
   }
-
   #final-text { color: var(--text); }
   #interim-text {
     color: var(--muted);
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
   }
-
   .transcript-empty {
     color: var(--muted);
     font-family: 'DM Sans Italic', sans-serif;
@@ -485,7 +401,6 @@
     font-size: 1rem;
   }
 
-  /* QR SIDEBAR */
   .qr-sidebar {
     background: var(--surface);
     padding: 3rem 2.5rem;
@@ -493,24 +408,9 @@
     flex-direction:column;
     gap: 2rem;
   }
-
-  .qr-box {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap: 1.25rem;
-  }
-
-  #qr-code {
-    background: white;
-    padding: 16px;
-    border: 1px solid var(--line);
-  }
-
-  #qr-code img, #qr-code canvas {
-    display: block;
-  }
-
+  .qr-box { display:flex; flex-direction:column; align-items:center; gap: 1.25rem; }
+  #qr-code { background: white; padding: 16px; border: 1px solid var(--line); }
+  #qr-code img, #qr-code canvas { display: block; }
   .qr-instruction {
     text-align: center;
     font-size: 0.85rem;
@@ -519,7 +419,6 @@
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
   }
-
   .session-info {
     border-top: 1px solid var(--line-dark);
     padding-top: 1.5rem;
@@ -527,26 +426,14 @@
     flex-direction:column;
     gap: 0.6rem;
   }
-
-  .info-row {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size: 0.8rem;
-  }
-
+  .info-row { display:flex; justify-content:space-between; align-items:center; font-size: 0.8rem; }
   .info-label {
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-size: 0.7rem;
   }
-
-  .info-value {
-    font-weight: 500;
-    letter-spacing: 0.05em;
-  }
-
+  .info-value { font-weight: 500; letter-spacing: 0.05em; }
   .url-display {
     font-size: 0.7rem;
     color: var(--muted);
@@ -557,20 +444,8 @@
     border: 1px solid var(--line);
   }
 
-  /* ═══════════════════════════════════════════════════
-     ATTENDEE
-     ═══════════════════════════════════════════════════ */
-  #attendee {
-    background: var(--bg);
-  }
-
-  .attendee-wrap {
-    flex: 1;
-    display:flex;
-    flex-direction:column;
-    max-width: 100%;
-  }
-
+  #attendee { background: var(--bg); }
+  .attendee-wrap { flex: 1; display:flex; flex-direction:column; max-width: 100%; }
   .attendee-status-bar {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--line);
@@ -578,7 +453,6 @@
     justify-content:space-between;
     align-items:center;
   }
-
   .live-tag {
     display:flex;
     align-items:center;
@@ -589,22 +463,14 @@
     color: var(--danger);
     font-weight: 500;
   }
-
   .session-tag {
     font-size: 0.7rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .session-tag b { color: var(--text); font-weight: 500; letter-spacing: 0.05em; }
-
-  /* LANG SELECTOR */
-  .attendee-lang-section {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--line);
-  }
-
+  .attendee-lang-section { padding: 1.5rem; border-bottom: 1px solid var(--line); }
   .attendee-lang-label {
     font-size: 0.7rem;
     letter-spacing: 0.2em;
@@ -612,7 +478,6 @@
     color: var(--muted);
     margin-bottom: 1rem;
   }
-
   .lang-scroll {
     display:flex;
     gap: 0.5rem;
@@ -621,7 +486,6 @@
     scrollbar-width: none;
   }
   .lang-scroll::-webkit-scrollbar { display:none; }
-
   .lang-pill {
     flex-shrink: 0;
     padding: 0.55rem 1.1rem;
@@ -635,7 +499,6 @@
     white-space: nowrap;
     font-family: 'DM Sans', sans-serif;
   }
-
   .lang-pill:hover { background: var(--surface); }
   .lang-pill.selected {
     background: var(--text);
@@ -643,7 +506,6 @@
     border-color: var(--text);
   }
 
-  /* AUDIO ZONE */
   .audio-zone {
     flex: 1;
     padding: 1.5rem;
@@ -652,7 +514,6 @@
     gap: 1rem;
     overflow-y: auto;
   }
-
   .audio-now-playing {
     background: var(--surface);
     padding: 1.25rem 1.5rem;
@@ -664,76 +525,39 @@
     transition: opacity 0.3s;
   }
   .audio-now-playing.playing { opacity: 1; }
-
-  .waveform {
-    display:flex;
-    align-items:center;
-    gap: 3px;
-    height: 28px;
-  }
-  .bar {
-    width: 2px;
-    background: var(--text);
-    height: 6px;
-  }
-  .audio-now-playing.playing .bar {
-    animation: wave 1.2s ease-in-out infinite;
-  }
-  @keyframes wave {
-    0%,100% { height: 6px; }
-    50% { height: 22px; }
-  }
+  .waveform { display:flex; align-items:center; gap: 3px; height: 28px; }
+  .bar { width: 2px; background: var(--text); height: 6px; }
+  .audio-now-playing.playing .bar { animation: wave 1.2s ease-in-out infinite; }
+  @keyframes wave { 0%,100% { height: 6px; } 50% { height: 22px; } }
   .bar:nth-child(2) { animation-delay: 0.1s; }
   .bar:nth-child(3) { animation-delay: 0.2s; }
   .bar:nth-child(4) { animation-delay: 0.3s; }
   .bar:nth-child(5) { animation-delay: 0.15s; }
-
   .now-playing-text {
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
     font-size: 0.85rem;
     color: var(--muted);
   }
-
-  .translation-feed {
-    display:flex;
-    flex-direction:column;
-    gap: 0;
-  }
-
+  .translation-feed { display:flex; flex-direction:column; gap: 0; }
   .translation-bubble {
     padding: 1.25rem 0;
     border-bottom: 1px solid var(--line);
     animation: fadeIn 0.4s ease;
   }
-
-  .translation-bubble:first-child {
-    padding-top: 0.5rem;
-  }
-
-  .translation-bubble.speaking .bubble-translated {
-    font-weight: 500;
-  }
-
+  .translation-bubble:first-child { padding-top: 0.5rem; }
+  .translation-bubble.speaking .bubble-translated { font-weight: 500; }
   @keyframes fadeIn {
     from { opacity:0; transform:translateY(6px); }
     to { opacity:1; transform:translateY(0); }
   }
-
-  .bubble-meta {
-    display:flex;
-    align-items:center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
+  .bubble-meta { display:flex; align-items:center; gap: 0.5rem; margin-bottom: 0.5rem; }
   .bubble-time {
     font-size: 0.7rem;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-
   .bubble-original {
     font-size: 0.78rem;
     color: var(--muted);
@@ -742,7 +566,6 @@
     font-style: italic;
     line-height: 1.5;
   }
-
   .bubble-translated {
     font-size: 1.05rem;
     line-height: 1.55;
@@ -750,7 +573,6 @@
     font-weight: 400;
   }
 
-  /* WAITING STATE */
   .waiting-state {
     flex: 1;
     display:flex;
@@ -762,7 +584,6 @@
     text-align:center;
     color: var(--muted);
   }
-
   .waiting-pulse {
     width: 80px;
     height: 80px;
@@ -773,7 +594,6 @@
     justify-content:center;
     position: relative;
   }
-
   .waiting-pulse::before {
     content:'';
     position: absolute;
@@ -786,21 +606,13 @@
     0% { inset: -8px; opacity:1; }
     100% { inset: -24px; opacity:0; }
   }
-
   .waiting-pulse svg {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     stroke: var(--muted);
     stroke-width: 1.2;
     fill: none;
   }
-
-  .waiting-state-title {
-    font-size: 1rem;
-    color: var(--text);
-    font-weight: 400;
-  }
-
+  .waiting-state-title { font-size: 1rem; color: var(--text); font-weight: 400; }
   .waiting-state-sub {
     font-size: 0.85rem;
     color: var(--muted);
@@ -808,14 +620,12 @@
     font-style: italic;
   }
 
-  /* ATTENDEE CONTROLS */
   .attendee-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--line);
     display:flex;
     gap: 0.75rem;
   }
-
   .footer-btn {
     flex: 1;
     padding: 0.85rem 1rem;
@@ -840,7 +650,6 @@
     text-decoration: line-through;
   }
 
-  /* ERROR/INFO BANNER */
   .info-banner {
     padding: 0.75rem 1rem;
     background: #fff8e1;
@@ -850,18 +659,9 @@
     margin-top: 0.75rem;
     line-height: 1.5;
   }
-  .info-banner.error {
-    background: #ffebee;
-    border-color: #ffaaaa;
-    color: #8b0000;
-  }
-  .info-banner.success {
-    background: #e8f5e9;
-    border-color: #a5d6a7;
-    color: #1b5e20;
-  }
+  .info-banner.error { background: #ffebee; border-color: #ffaaaa; color: #8b0000; }
+  .info-banner.success { background: #e8f5e9; border-color: #a5d6a7; color: #1b5e20; }
 
-  /* RESPONSIVE */
   @media (max-width: 900px) {
     .landing-grid { grid-template-columns: 1fr; }
     .landing-right { display: none; }
@@ -871,11 +671,10 @@
     .presenter-main { padding: 2rem 1.5rem; border-right: none; }
     .lang-grid { grid-template-columns: repeat(2, 1fr); }
     .brand-logo { height: 28px; }
+    .brand-tagline { display:none; }
   }
-
   @media (max-width: 480px) {
     .brand-header { padding: 1.25rem 1.5rem; }
-    .brand-tagline { display: none; }
     .lang-grid { grid-template-columns: 1fr; }
     .brand-logo { height: 24px; }
   }
@@ -883,20 +682,22 @@
 </head>
 <body>
 
-<!-- ════════════════════════════ BRAND HEADER (always visible) ════════════════════════════ -->
 <header class="brand-header">
   <img src="logo.png" alt="LOSAN" class="brand-logo">
+  <div class="conn-badge" id="conn-badge">
+    <span class="conn-dot"></span>
+    <span id="conn-text">desconectado</span>
+  </div>
   <span class="brand-tagline">live translation</span>
 </header>
 
-<!-- ════════════════════════════ LANDING ════════════════════════════ -->
+<!-- LANDING -->
 <div id="landing" class="view active">
   <div class="landing-grid">
     <div class="landing-left">
       <div class="eyebrow">Convention Translation System</div>
       <h1 class="landing-title">Habla.<br><em>El mundo escucha.</em></h1>
       <p class="landing-sub">Traducción simultánea para convenciones. Sin apps. Sin registro. Sin instalaciones. Solo escanea y escucha en tu idioma.</p>
-
       <div class="role-cards">
         <div class="role-card" onclick="goPresenter()">
           <div class="role-card-content">
@@ -914,7 +715,6 @@
         </div>
       </div>
     </div>
-
     <div class="landing-right">
       <div class="visual-block">
         <svg class="visual-block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
@@ -929,11 +729,10 @@
   </div>
 </div>
 
-<!-- ════════════════════════════ PRESENTER ════════════════════════════ -->
+<!-- PRESENTER -->
 <div id="presenter" class="view">
   <div class="presenter-grid">
     <div class="presenter-main">
-
       <div class="section-head">
         <h2 class="section-title">Panel del <em>presentador</em></h2>
         <div class="status-indicator">
@@ -941,8 +740,6 @@
           <span id="rec-label">En espera</span>
         </div>
       </div>
-
-      <!-- MIC + SOUND METER -->
       <div class="mic-section">
         <div class="mic-btn-wrap" id="mic-btn-wrap">
           <div class="mic-level-ring" id="mic-level-ring"></div>
@@ -956,50 +753,29 @@
           </button>
         </div>
         <p class="mic-status" id="mic-status">Pulsa el micrófono para empezar</p>
-
-        <!-- Sound level meter -->
         <div class="sound-meter" id="sound-meter">
           <div class="meter-label">
             <span>Nivel de entrada</span>
             <span class="level-text" id="level-text">—</span>
           </div>
-          <div class="meter-bars" id="meter-bars">
-            <!-- 20 bars generated by JS -->
-          </div>
+          <div class="meter-bars" id="meter-bars"></div>
         </div>
-
         <div id="info-banner-container"></div>
       </div>
-
-      <!-- LANGUAGES -->
       <div>
         <div class="section-head">
           <h2 class="section-title">Idiomas <em>disponibles</em></h2>
           <span class="status-indicator">para los asistentes</span>
         </div>
         <div class="lang-grid" id="lang-grid">
-          <div class="lang-chip active" data-lang="en" onclick="toggleLang(this)">
-            <span class="lang-name">English</span><span class="lang-check"></span>
-          </div>
-          <div class="lang-chip active" data-lang="fr" onclick="toggleLang(this)">
-            <span class="lang-name">Français</span><span class="lang-check"></span>
-          </div>
-          <div class="lang-chip active" data-lang="de" onclick="toggleLang(this)">
-            <span class="lang-name">Deutsch</span><span class="lang-check"></span>
-          </div>
-          <div class="lang-chip active" data-lang="it" onclick="toggleLang(this)">
-            <span class="lang-name">Italiano</span><span class="lang-check"></span>
-          </div>
-          <div class="lang-chip active" data-lang="pt" onclick="toggleLang(this)">
-            <span class="lang-name">Português</span><span class="lang-check"></span>
-          </div>
-          <div class="lang-chip active" data-lang="ca" onclick="toggleLang(this)">
-            <span class="lang-name">Català</span><span class="lang-check"></span>
-          </div>
+          <div class="lang-chip active" data-lang="en" onclick="toggleLang(this)"><span class="lang-name">English</span><span class="lang-check"></span></div>
+          <div class="lang-chip active" data-lang="fr" onclick="toggleLang(this)"><span class="lang-name">Français</span><span class="lang-check"></span></div>
+          <div class="lang-chip active" data-lang="de" onclick="toggleLang(this)"><span class="lang-name">Deutsch</span><span class="lang-check"></span></div>
+          <div class="lang-chip active" data-lang="it" onclick="toggleLang(this)"><span class="lang-name">Italiano</span><span class="lang-check"></span></div>
+          <div class="lang-chip active" data-lang="pt" onclick="toggleLang(this)"><span class="lang-name">Português</span><span class="lang-check"></span></div>
+          <div class="lang-chip active" data-lang="ca" onclick="toggleLang(this)"><span class="lang-name">Català</span><span class="lang-check"></span></div>
         </div>
       </div>
-
-      <!-- TRANSCRIPT -->
       <div>
         <div class="section-head">
           <h2 class="section-title">Transcripción <em>en vivo</em></h2>
@@ -1013,45 +789,30 @@
           </div>
         </div>
       </div>
-
     </div>
-
-    <!-- QR SIDEBAR -->
     <aside class="qr-sidebar">
       <div class="qr-box">
         <div class="eyebrow">Acceso para asistentes</div>
         <div id="qr-code"></div>
         <p class="qr-instruction">Escanea con la cámara<br>de tu móvil</p>
       </div>
-
       <div class="session-info">
-        <div class="info-row">
-          <span class="info-label">Sesión</span>
-          <span class="info-value" id="session-display">—</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Estado</span>
-          <span class="info-value" id="state-display">Inactivo</span>
-        </div>
+        <div class="info-row"><span class="info-label">Sesión</span><span class="info-value" id="session-display">—</span></div>
+        <div class="info-row"><span class="info-label">Estado</span><span class="info-value" id="state-display">Inactivo</span></div>
+        <div class="info-row"><span class="info-label">Asistentes</span><span class="info-value" id="attendees-count">0</span></div>
       </div>
-
       <div class="url-display" id="attendee-url-display">—</div>
     </aside>
   </div>
 </div>
 
-<!-- ════════════════════════════ ATTENDEE ════════════════════════════ -->
+<!-- ATTENDEE -->
 <div id="attendee" class="view">
   <div class="attendee-wrap">
-
     <div class="attendee-status-bar">
-      <div class="live-tag">
-        <span class="dot active"></span>
-        En directo
-      </div>
+      <div class="live-tag"><span class="dot active"></span>En directo</div>
       <div class="session-tag">Sesión <b id="attendee-session">—</b></div>
     </div>
-
     <div class="attendee-lang-section">
       <div class="attendee-lang-label">Escuchar en</div>
       <div class="lang-scroll" id="attendee-lang-scroll">
@@ -1064,17 +825,13 @@
         <div class="lang-pill" data-lang="es">Español (original)</div>
       </div>
     </div>
-
     <div class="audio-zone" id="audio-zone">
-
       <div class="audio-now-playing" id="now-playing">
         <div class="waveform">
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
         <span class="now-playing-text">Reproduciendo traducción...</span>
       </div>
-
       <div class="translation-feed" id="translation-feed">
         <div class="waiting-state" id="waiting-msg">
           <div class="waiting-pulse">
@@ -1087,18 +844,21 @@
           <div class="waiting-state-sub">El audio traducido aparecerá aquí en cuanto empiece</div>
         </div>
       </div>
-
     </div>
-
     <div class="attendee-footer">
       <button class="footer-btn primary" id="audio-toggle" onclick="toggleAudio()">Audio activado</button>
       <button class="footer-btn" onclick="goLanding()">Salir</button>
     </div>
-
   </div>
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════
+// PieSocket realtime config (public demo credentials)
+// ═══════════════════════════════════════════════════════
+const PIESOCKET_CLUSTER = 'free.blr2';
+const PIESOCKET_KEY = 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV';
+
 const LANGS = {
   en: { name: 'English',   bcp: 'en-US' },
   fr: { name: 'Français',  bcp: 'fr-FR' },
@@ -1124,9 +884,11 @@ let analyser = null;
 let micStream = null;
 let meterRAF = null;
 
-const CHANNEL_KEY = 'losan_livelang_msg';
+// WebSocket
+let ws = null;
+let wsReconnectTimer = null;
+let isPresenter = false;
 
-// Build meter bars
 (function buildBars(){
   const bars = document.getElementById('meter-bars');
   for (let i = 0; i < 24; i++) {
@@ -1141,9 +903,33 @@ function showView(id) {
   document.getElementById(id).classList.add('active');
 }
 
-function goPresenter() { showView('presenter'); initPresenter(); }
-function goAttendee(sid) { if (sid) sessionId = sid; showView('attendee'); initAttendee(); }
-function goLanding() { stopRecording(); stopMeter(); showView('landing'); }
+function setConnectionState(state, text) {
+  const badge = document.getElementById('conn-badge');
+  badge.classList.remove('connected', 'connecting', 'error');
+  if (state) badge.classList.add(state);
+  document.getElementById('conn-text').textContent = text;
+}
+
+function goPresenter() {
+  isPresenter = true;
+  showView('presenter');
+  initPresenter();
+}
+
+function goAttendee(sid) {
+  isPresenter = false;
+  if (sid) sessionId = sid;
+  showView('attendee');
+  initAttendee();
+}
+
+function goLanding() {
+  stopRecording();
+  stopMeter();
+  closeWS();
+  showView('landing');
+  setConnectionState(null, 'desconectado');
+}
 
 function showBanner(msg, type) {
   const el = document.getElementById('info-banner-container');
@@ -1155,6 +941,75 @@ function clearBanner() {
   if (el) el.innerHTML = '';
 }
 
+// ═══════════════════════════════════════════════════════
+// WEBSOCKET (PieSocket)
+// ═══════════════════════════════════════════════════════
+function connectWS(roomId, onMessage) {
+  setConnectionState('connecting', 'conectando...');
+
+  const url = `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${encodeURIComponent(roomId)}?api_key=${PIESOCKET_KEY}&notify_self=0`;
+
+  try {
+    ws = new WebSocket(url);
+  } catch (err) {
+    console.error('WS construct error:', err);
+    setConnectionState('error', 'error de conexión');
+    return;
+  }
+
+  ws.onopen = () => {
+    console.log('WS connected to room', roomId);
+    setConnectionState('connected', 'conectado');
+    if (isPresenter) {
+      // Announce presence as presenter
+      try { ws.send(JSON.stringify({ type: 'presenter_online', sessionId })); } catch(_) {}
+    } else {
+      // Attendee announces presence
+      try { ws.send(JSON.stringify({ type: 'attendee_join', sessionId })); } catch(_) {}
+    }
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (onMessage) onMessage(data);
+    } catch(err) { console.error('WS parse error:', err, event.data); }
+  };
+
+  ws.onerror = (err) => {
+    console.error('WS error:', err);
+    setConnectionState('error', 'error de red');
+  };
+
+  ws.onclose = () => {
+    console.log('WS closed');
+    setConnectionState('error', 'desconectado');
+    // Auto-reconnect after 3s if still in active view
+    if (!wsReconnectTimer && (isPresenter || document.getElementById('attendee').classList.contains('active'))) {
+      wsReconnectTimer = setTimeout(() => {
+        wsReconnectTimer = null;
+        connectWS(roomId, onMessage);
+      }, 3000);
+    }
+  };
+}
+
+function sendWS(payload) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    try { ws.send(JSON.stringify(payload)); return true; }
+    catch(err) { console.error('WS send error:', err); return false; }
+  }
+  return false;
+}
+
+function closeWS() {
+  if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
+  if (ws) { try { ws.close(); } catch(_) {} ws = null; }
+}
+
+// ═══════════════════════════════════════════════════════
+// PRESENTER
+// ═══════════════════════════════════════════════════════
 function initPresenter() {
   document.getElementById('session-display').textContent = sessionId;
   const attendeeURL = buildAttendeeURL();
@@ -1169,10 +1024,18 @@ function initPresenter() {
     correctLevel: QRCode.CorrectLevel.M
   });
 
-  // Check HTTPS
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     showBanner('⚠ Estás en HTTP. El navegador bloqueará el micrófono. La página debe servirse por HTTPS.', 'error');
   }
+
+  // Connect to realtime channel
+  let attendeeCount = 0;
+  connectWS('losan-' + sessionId, (data) => {
+    if (data.type === 'attendee_join') {
+      attendeeCount++;
+      document.getElementById('attendees-count').textContent = attendeeCount;
+    }
+  });
 }
 
 function buildAttendeeURL() {
@@ -1201,7 +1064,6 @@ async function startRecording() {
     return;
   }
 
-  // First: request mic access and start the sound meter so user can see input level
   try {
     await startMeter();
   } catch (err) {
@@ -1233,7 +1095,7 @@ async function startRecording() {
     document.getElementById('mic-status').textContent = 'Escuchando... habla con normalidad';
     document.getElementById('state-display').textContent = 'Retransmitiendo';
     document.getElementById('empty-msg')?.remove();
-    showBanner('✓ Micrófono activo. Observa la barra de nivel — debe moverse cuando hablas.', 'success');
+    showBanner('✓ Micrófono activo. Lo que digas se enviará a los asistentes.', 'success');
   };
 
   recognition.onresult = (e) => {
@@ -1292,14 +1154,9 @@ function stopRecording() {
   clearBanner();
 }
 
-// ── SOUND METER ──
 async function startMeter() {
   micStream = await navigator.mediaDevices.getUserMedia({
-    audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true
-    }
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
   });
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const source = audioContext.createMediaStreamSource(micStream);
@@ -1307,7 +1164,6 @@ async function startMeter() {
   analyser.fftSize = 256;
   analyser.smoothingTimeConstant = 0.6;
   source.connect(analyser);
-
   document.getElementById('sound-meter').classList.add('active');
   drawMeter();
 }
@@ -1316,19 +1172,14 @@ function drawMeter() {
   if (!analyser) return;
   const data = new Uint8Array(analyser.frequencyBinCount);
   analyser.getByteFrequencyData(data);
-
-  // Calculate avg volume
   let sum = 0;
   for (let i = 0; i < data.length; i++) sum += data[i];
   const avg = sum / data.length;
   const level = Math.min(100, Math.round((avg / 128) * 100));
-
-  // Update bars
   const bars = document.querySelectorAll('.meter-bar');
   const activeBars = Math.round((level / 100) * bars.length);
   bars.forEach((bar, i) => {
     if (i < activeBars) {
-      // Color based on position: green-ish dark for low, danger for high
       if (i < bars.length * 0.6) bar.style.background = 'var(--text)';
       else if (i < bars.length * 0.85) bar.style.background = '#d4af37';
       else bar.style.background = 'var(--danger)';
@@ -1338,8 +1189,6 @@ function drawMeter() {
       bar.style.height = '6px';
     }
   });
-
-  // Text indicator
   const txt = document.getElementById('level-text');
   if (txt) {
     if (level < 5) txt.textContent = 'silencio';
@@ -1348,14 +1197,8 @@ function drawMeter() {
     else if (level < 80) txt.textContent = 'alto';
     else txt.textContent = 'saturado';
   }
-
-  // Ring expansion based on level
   const ring = document.getElementById('mic-level-ring');
-  if (ring) {
-    const scale = 1 + (level / 100) * 0.15;
-    ring.style.transform = `scale(${scale})`;
-  }
-
+  if (ring) ring.style.transform = `scale(${1 + (level / 100) * 0.15})`;
   meterRAF = requestAnimationFrame(drawMeter);
 }
 
@@ -1378,18 +1221,26 @@ function stopMeter() {
 
 function broadcastText(text) {
   const payload = {
+    type: 'transcript',
     text,
     timestamp: Date.now(),
-    langs: Array.from(activeLangs),
-    sessionId,
-    nonce: Math.random()
+    sessionId
   };
-  localStorage.setItem(CHANNEL_KEY, JSON.stringify(payload));
+  const ok = sendWS(payload);
+  if (!ok) {
+    console.warn('No se pudo enviar a los asistentes — WebSocket no conectado');
+  }
 }
 
+// ═══════════════════════════════════════════════════════
+// ATTENDEE
+// ═══════════════════════════════════════════════════════
 function initAttendee() {
   document.getElementById('attendee-session').textContent = sessionId;
-  window.addEventListener('storage', onStorageEvent);
+
+  // Unlock audio on iOS (must be triggered by user gesture)
+  document.body.addEventListener('click', unlockSpeech, { once: true });
+  document.body.addEventListener('touchstart', unlockSpeech, { once: true });
 
   document.querySelectorAll('.lang-pill').forEach(p => {
     p.addEventListener('click', () => {
@@ -1398,15 +1249,22 @@ function initAttendee() {
       attendeeLang = p.dataset.lang;
     });
   });
+
+  // Connect to same realtime channel as presenter
+  connectWS('losan-' + sessionId, (data) => {
+    if (data.type === 'transcript' && data.text) {
+      handleIncomingText(data.text);
+    }
+  });
 }
 
-function onStorageEvent(e) {
-  if (e.key !== CHANNEL_KEY) return;
+function unlockSpeech() {
+  // iOS requires speech synthesis to be triggered first by a user gesture
   try {
-    const data = JSON.parse(e.newValue);
-    if (!data || !data.text) return;
-    handleIncomingText(data.text);
-  } catch(err) { console.error(err); }
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+  } catch(_) {}
 }
 
 async function handleIncomingText(originalText) {
@@ -1441,19 +1299,15 @@ function addTranslationBubble(original, translated) {
   const feed = document.getElementById('translation-feed');
   const now = new Date();
   const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-
   const bubble = document.createElement('div');
   bubble.className = 'translation-bubble speaking';
   bubble.innerHTML = `
-    <div class="bubble-meta">
-      <span class="bubble-time">${timeStr}</span>
-    </div>
+    <div class="bubble-meta"><span class="bubble-time">${timeStr}</span></div>
     <div class="bubble-original">${escapeHtml(original)}</div>
     <div class="bubble-translated">${escapeHtml(translated)}</div>
   `;
   feed.prepend(bubble);
   setTimeout(() => bubble.classList.remove('speaking'), 3500);
-
   const bubbles = feed.querySelectorAll('.translation-bubble');
   if (bubbles.length > 15) bubbles[bubbles.length - 1].remove();
 }
@@ -1470,25 +1324,19 @@ function speakNext() {
     document.getElementById('now-playing').classList.remove('playing');
     return;
   }
-
   isSpeaking = true;
   document.getElementById('now-playing').classList.add('playing');
-
   const { text, lang } = pendingQueue.shift();
   const bcp = LANGS[lang]?.bcp || 'en-US';
-
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = bcp;
   utter.rate = 0.97;
   utter.pitch = 1.0;
-
   const voices = speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang) || v.lang.startsWith(bcp.split('-')[0]));
   if (match) utter.voice = match;
-
   utter.onend = () => speakNext();
   utter.onerror = () => speakNext();
-
   speechSynthesis.speak(utter);
 }
 
@@ -1524,6 +1372,8 @@ window.addEventListener('DOMContentLoaded', () => {
     goAttendee(joinId);
   }
 });
+
+window.addEventListener('beforeunload', () => { closeWS(); });
 </script>
 </body>
 </html>
