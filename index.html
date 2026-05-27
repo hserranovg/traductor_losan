@@ -1057,7 +1057,6 @@ function connectFirebase(onMessage) {
   if (!isPresenter) {
     myAttendeeRef = db.ref(`sessions/${sessionId}/attendees`).push();
     myAttendeeRef.set({ joinedAt: firebase.database.ServerValue.TIMESTAMP });
-    // Remove on disconnect
     myAttendeeRef.onDisconnect().remove();
   } else {
     // Presenter watches attendee count
@@ -1067,6 +1066,10 @@ function connectFirebase(onMessage) {
       const el = document.getElementById('attendees-count');
       if (el) el.textContent = count;
     });
+
+    // AUTO-CLEANUP: when presenter disconnects, wipe the whole session
+    // This keeps Firebase clean and avoids accumulating data
+    db.ref(`sessions/${sessionId}`).onDisconnect().remove();
   }
 }
 
@@ -1082,6 +1085,10 @@ function sendFirebaseMessage(payload) {
 }
 
 function disconnectFirebase() {
+  // If presenter, wipe the session data immediately
+  if (isPresenter && sessionId) {
+    try { db.ref(`sessions/${sessionId}`).remove(); } catch(_) {}
+  }
   if (connectedRef) { connectedRef.off(); connectedRef = null; }
   if (messagesRef && messagesListener) { messagesRef.off('child_added', messagesListener); }
   messagesRef = null;
@@ -1347,6 +1354,21 @@ async function handleIncomingText(originalText) {
 }
 
 async function translateText(text, targetLang) {
+  // Fast Google Translate endpoint (no registration, ~200-400ms)
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    // Response is a nested array; first element contains translation chunks
+    if (Array.isArray(data) && Array.isArray(data[0])) {
+      const translated = data[0].map(chunk => chunk[0]).join('');
+      if (translated) return translated;
+    }
+  } catch(err) {
+    console.warn('Google Translate failed, trying fallback:', err);
+  }
+
+  // Fallback to MyMemory if Google fails
   try {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=es|${targetLang}`;
     const res = await fetch(url);
@@ -1354,7 +1376,8 @@ async function translateText(text, targetLang) {
     if (data.responseStatus === 200 && data.responseData?.translatedText) {
       return data.responseData.translatedText;
     }
-  } catch(err) { console.error('Translation error:', err); }
+  } catch(err) { console.error('Fallback translation error:', err); }
+
   return text;
 }
 
