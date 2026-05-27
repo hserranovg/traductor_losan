@@ -973,12 +973,15 @@ let pendingQueue = [];
 let isSpeaking = false;
 let isPresenter = false;
 
-// Interim chunking — send text in natural chunks for better voice quality
-const CHUNK_MIN_WORDS = 8;      // minimum words before considering a chunk
-const CHUNK_MAX_WORDS = 25;     // force chunk at this point even without punctuation
+// Chunking tuned for continuous speakers (conventions, presentations)
+// Goal: low latency, attendees should never wait more than ~6-8 seconds
+const CHUNK_MIN_WORDS = 6;       // minimum words to consider sending
+const CHUNK_MAX_WORDS = 12;      // force chunk at this point — keeps latency low
+const CHUNK_TIMEOUT_MS = 4000;   // if no chunk sent in this time, force send what we have
 let lastInterimSent = '';
 let lastSentText = '';
-let isMuted = false;  // when true, transcript still works but not broadcast
+let isMuted = false;
+let lastChunkSentAt = 0;
 
 let audioContext = null;
 let analyser = null;
@@ -1249,7 +1252,9 @@ async function startRecording() {
     isRecording = true;
     lastInterimSent = '';
     lastSentText = '';
+    lastChunkSentAt = Date.now();
     isMuted = false;
+    startChunkTimeoutWatcher();
     document.getElementById('mute-btn').classList.add('enabled');
     document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
@@ -1316,6 +1321,7 @@ async function startRecording() {
 function stopRecording() {
   isRecording = false;
   isMuted = false;
+  stopChunkTimeoutWatcher();
   if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
   document.getElementById('mic-btn-wrap')?.classList.remove('recording');
@@ -1414,7 +1420,7 @@ function extractNewPart(current, alreadySent) {
   return current;
 }
 
-// Smarter chunking — prefer punctuation, wait until we have enough content
+// Aggressive chunking — send small chunks fast for live presentations
 function checkInterimChunking(interim) {
   if (!interim) return;
   const newPart = extractNewPart(interim, lastInterimSent);
@@ -1422,31 +1428,58 @@ function checkInterimChunking(interim) {
 
   const words = newPart.trim().split(/\s+/);
 
-  // Strategy:
-  // 1. If we have at least MIN words AND there's punctuation → send up to last punctuation
-  // 2. If we have MAX words without any punctuation → force send MAX words
-  // 3. Otherwise wait
-
   if (words.length < CHUNK_MIN_WORDS) return;
 
-  // Look for the last natural break point in current text
-  const punctMatch = newPart.match(/^([\s\S]+[.,;:?!])\s/);
+  // Look for punctuation but only consume what's BEFORE it
+  // If found within the first MAX words, prefer cutting there for natural phrasing
+  const candidate = words.slice(0, CHUNK_MAX_WORDS).join(' ');
+  const punctMatch = candidate.match(/^([\s\S]+?[.,;:?!])\s/);
 
-  if (punctMatch) {
-    const chunk = punctMatch[1].trim();
-    const chunkWords = chunk.split(/\s+/).length;
-    if (chunkWords >= CHUNK_MIN_WORDS) {
-      broadcastText(chunk);
-      lastInterimSent = (lastInterimSent + ' ' + chunk).trim();
-      return;
-    }
+  let chunk;
+  if (punctMatch && punctMatch[1].split(/\s+/).length >= CHUNK_MIN_WORDS) {
+    // Natural break point within our window
+    chunk = punctMatch[1];
+  } else if (words.length >= CHUNK_MAX_WORDS) {
+    // No punctuation but we hit the max — send anyway
+    chunk = words.slice(0, CHUNK_MAX_WORDS).join(' ');
+  } else {
+    // Wait a bit more — but not too long
+    return;
   }
 
-  // No suitable punctuation — only force-send if we hit MAX
-  if (words.length >= CHUNK_MAX_WORDS) {
-    const chunk = words.slice(0, CHUNK_MAX_WORDS).join(' ');
+  broadcastText(chunk);
+  lastInterimSent = (lastInterimSent + ' ' + chunk).trim();
+  lastChunkSentAt = Date.now();
+}
+
+// Periodic safety net: if speaker keeps talking with no punctuation,
+// force-send pending text every CHUNK_TIMEOUT_MS so attendees don't wait too long
+function startChunkTimeoutWatcher() {
+  if (window._chunkWatcher) return;
+  window._chunkWatcher = setInterval(() => {
+    if (!isRecording || isMuted) return;
+    const interimEl = document.getElementById('interim-text');
+    if (!interimEl) return;
+    const interim = interimEl.textContent || '';
+    const newPart = extractNewPart(interim, lastInterimSent);
+    if (!newPart) return;
+    const words = newPart.trim().split(/\s+/);
+    if (words.length < CHUNK_MIN_WORDS) return;
+    // Has it been a while since last send?
+    const now = Date.now();
+    if (now - lastChunkSentAt < CHUNK_TIMEOUT_MS) return;
+    // Force-send what we have
+    const chunk = words.slice(0, Math.min(words.length, CHUNK_MAX_WORDS)).join(' ');
     broadcastText(chunk);
     lastInterimSent = (lastInterimSent + ' ' + chunk).trim();
+    lastChunkSentAt = now;
+  }, 1000);
+}
+
+function stopChunkTimeoutWatcher() {
+  if (window._chunkWatcher) {
+    clearInterval(window._chunkWatcher);
+    window._chunkWatcher = null;
   }
 }
 
