@@ -631,6 +631,81 @@
   .info-banner.error { background: #ffebee; border-color: #ffaaaa; color: #8b0000; }
   .info-banner.success { background: #e8f5e9; border-color: #a5d6a7; color: #1b5e20; }
 
+  /* AUDIO UNLOCK OVERLAY (iOS) */
+  .audio-unlock {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.98);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .audio-unlock.show { display: flex; }
+  .audio-unlock-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .audio-unlock-title {
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.1;
+    max-width: 480px;
+  }
+  .audio-unlock-title em {
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .audio-unlock-sub {
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-family: 'DM Sans Italic', sans-serif;
+    font-style: italic;
+    max-width: 360px;
+    line-height: 1.6;
+  }
+  .audio-unlock-btn {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    padding: 1.2rem 3rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 0;
+    display:flex;
+    align-items:center;
+    gap: 0.75rem;
+    transition: transform 0.2s;
+  }
+  .audio-unlock-btn:hover { transform: scale(1.02); }
+  .audio-unlock-btn:active { transform: scale(0.98); }
+  .audio-unlock-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+  .audio-unlock-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    max-width: 320px;
+    line-height: 1.6;
+    margin-top: 1rem;
+  }
+  .audio-unlock-logo {
+    height: 40px;
+    margin-bottom: 1rem;
+  }
+
   @media (max-width: 900px) {
     .landing-grid { grid-template-columns: 1fr; }
     .landing-right { display: none; }
@@ -659,6 +734,19 @@
   </div>
   <span class="brand-tagline">live translation</span>
 </header>
+
+<!-- AUDIO UNLOCK OVERLAY (for attendees, mostly iOS) -->
+<div class="audio-unlock" id="audio-unlock">
+  <img src="logo.png" alt="LOSAN" class="audio-unlock-logo">
+  <div class="audio-unlock-eyebrow">Casi listo</div>
+  <h2 class="audio-unlock-title">Toca para <em>empezar a escuchar</em></h2>
+  <p class="audio-unlock-sub">Tu navegador necesita un toque tuyo para activar el audio de la traducción.</p>
+  <button class="audio-unlock-btn" id="audio-unlock-btn" onclick="unlockAudioAndEnter()">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    Activar audio
+  </button>
+  <p class="audio-unlock-hint">Si estás en iPhone, asegúrate de que el interruptor lateral de silencio NO está activado (no se ve naranja).</p>
+</div>
 
 <div id="landing" class="view active">
   <div class="landing-grid">
@@ -728,20 +816,6 @@
           <div class="meter-bars" id="meter-bars"></div>
         </div>
         <div id="info-banner-container"></div>
-      </div>
-      <div>
-        <div class="section-head">
-          <h2 class="section-title">Idiomas <em>disponibles</em></h2>
-          <span class="status-indicator">para los asistentes</span>
-        </div>
-        <div class="lang-grid" id="lang-grid">
-          <div class="lang-chip active" data-lang="en" onclick="toggleLang(this)"><span class="lang-name">English</span><span class="lang-check"></span></div>
-          <div class="lang-chip active" data-lang="fr" onclick="toggleLang(this)"><span class="lang-name">Français</span><span class="lang-check"></span></div>
-          <div class="lang-chip active" data-lang="de" onclick="toggleLang(this)"><span class="lang-name">Deutsch</span><span class="lang-check"></span></div>
-          <div class="lang-chip active" data-lang="it" onclick="toggleLang(this)"><span class="lang-name">Italiano</span><span class="lang-check"></span></div>
-          <div class="lang-chip active" data-lang="pt" onclick="toggleLang(this)"><span class="lang-name">Português</span><span class="lang-check"></span></div>
-          <div class="lang-chip active" data-lang="ca" onclick="toggleLang(this)"><span class="lang-name">Català</span><span class="lang-check"></span></div>
-        </div>
       </div>
       <div>
         <div class="section-head">
@@ -902,6 +976,32 @@ function goAttendee(sid) {
   isPresenter = false;
   if (sid) sessionId = sid;
   showView('attendee');
+  // Show audio unlock overlay BEFORE initialising attendee logic
+  document.getElementById('audio-unlock').classList.add('show');
+}
+
+// Called when user taps the "Activar audio" button
+function unlockAudioAndEnter() {
+  // CRITICAL: speak a real (silent) utterance within the user gesture
+  // This unlocks the speech synthesis engine on iOS Safari
+  try {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 1;
+    u.rate = 1;
+    speechSynthesis.speak(u);
+  } catch(e) { console.warn('unlock speak failed:', e); }
+
+  // Also resume audio context if any
+  try {
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  } catch(_) {}
+
+  // Hide overlay
+  document.getElementById('audio-unlock').classList.remove('show');
+
+  // Now actually initialise the attendee logic
   initAttendee();
 }
 
@@ -1207,8 +1307,6 @@ function broadcastText(text) {
 // ═══════════════════════════════════════════════════════
 function initAttendee() {
   document.getElementById('attendee-session').textContent = sessionId;
-  document.body.addEventListener('click', unlockSpeech, { once: true });
-  document.body.addEventListener('touchstart', unlockSpeech, { once: true });
 
   document.querySelectorAll('.lang-pill').forEach(p => {
     p.addEventListener('click', () => {
@@ -1226,6 +1324,7 @@ function initAttendee() {
 }
 
 function unlockSpeech() {
+  // Kept for compatibility — main unlock happens via unlockAudioAndEnter()
   try {
     const u = new SpeechSynthesisUtterance('');
     u.volume = 0;
@@ -1292,16 +1391,42 @@ function speakNext() {
   document.getElementById('now-playing').classList.add('playing');
   const { text, lang } = pendingQueue.shift();
   const bcp = LANGS[lang]?.bcp || 'en-US';
+
+  // iOS Safari sometimes "freezes" speechSynthesis; resume() wakes it up
+  try {
+    if (speechSynthesis.paused) speechSynthesis.resume();
+  } catch(_) {}
+
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = bcp;
   utter.rate = 0.97;
   utter.pitch = 1.0;
+  utter.volume = 1;
   const voices = speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang) || v.lang.startsWith(bcp.split('-')[0]));
   if (match) utter.voice = match;
+
+  // iOS workaround: every ~14s, cancel/resume to keep TTS alive
+  if (!window._iosKeepAlive) {
+    window._iosKeepAlive = setInterval(() => {
+      try {
+        if (speechSynthesis.speaking) {
+          speechSynthesis.pause();
+          speechSynthesis.resume();
+        }
+      } catch(_) {}
+    }, 10000);
+  }
+
   utter.onend = () => speakNext();
-  utter.onerror = () => speakNext();
-  speechSynthesis.speak(utter);
+  utter.onerror = (e) => { console.warn('TTS error:', e); speakNext(); };
+
+  try {
+    speechSynthesis.speak(utter);
+  } catch(err) {
+    console.error('speak error:', err);
+    speakNext();
+  }
 }
 
 function toggleAudio() {
