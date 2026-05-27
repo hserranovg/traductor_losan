@@ -933,6 +933,11 @@ let pendingQueue = [];
 let isSpeaking = false;
 let isPresenter = false;
 
+// Interim chunking — send every N words even while still speaking
+const CHUNK_WORD_COUNT = 15;
+let lastInterimSent = '';   // last interim text already sent to attendees
+let lastSentText = '';      // tracks what was last broadcast
+
 let audioContext = null;
 let analyser = null;
 let micStream = null;
@@ -1174,6 +1179,8 @@ async function startRecording() {
 
   recognition.onstart = () => {
     isRecording = true;
+    lastInterimSent = '';
+    lastSentText = '';
     document.getElementById('mic-btn').classList.add('recording');
     document.getElementById('mic-btn-wrap').classList.add('recording');
     document.getElementById('rec-dot').classList.add('active');
@@ -1193,11 +1200,22 @@ async function startRecording() {
       else interim += t;
     }
     document.getElementById('interim-text').textContent = interim;
+
     if (final) {
       const prev = document.getElementById('final-text').textContent;
       document.getElementById('final-text').textContent = prev + final + ' ';
       document.getElementById('interim-text').textContent = '';
-      broadcastText(final.trim());
+      // Send remaining unsent part of the final text
+      const finalTrimmed = final.trim();
+      if (finalTrimmed && finalTrimmed !== lastSentText) {
+        const newPart = extractNewPart(finalTrimmed, lastSentText);
+        if (newPart) broadcastText(newPart);
+        lastSentText = '';
+        lastInterimSent = '';
+      }
+    } else if (interim) {
+      // Chunk by word count: send every ~15 words even while speaking
+      checkInterimChunking(interim);
     }
   };
 
@@ -1306,7 +1324,50 @@ function stopMeter() {
 }
 
 function broadcastText(text) {
-  sendFirebaseMessage({ type: 'transcript', text });
+  if (!text || !text.trim()) return;
+  sendFirebaseMessage({ type: 'transcript', text: text.trim() });
+}
+
+// Returns the portion of `current` that hasn't been sent yet
+// Both strings start from the beginning of the same final result
+function extractNewPart(current, alreadySent) {
+  if (!alreadySent) return current;
+  if (current.startsWith(alreadySent)) {
+    return current.substring(alreadySent.length).trim();
+  }
+  // If they diverged, send the whole new text
+  return current;
+}
+
+// Check if interim text has grown enough to send a chunk
+// Prefers breaking at punctuation for better translation quality
+function checkInterimChunking(interim) {
+  if (!interim) return;
+  const newPart = extractNewPart(interim, lastInterimSent);
+  if (!newPart) return;
+
+  const words = newPart.trim().split(/\s+/);
+
+  // If we have enough words, try to find a natural break point
+  if (words.length >= CHUNK_WORD_COUNT) {
+    let chunkText = '';
+
+    // Look for a punctuation break (. , ; : ?) in the first 25 words
+    const searchWords = words.slice(0, Math.min(25, words.length));
+    const candidate = searchWords.join(' ');
+    const punctMatch = candidate.match(/^([\s\S]+?[.,;:?!])\s/);
+
+    if (punctMatch && punctMatch[1].split(/\s+/).length >= Math.floor(CHUNK_WORD_COUNT * 0.6)) {
+      // Found a natural break with at least ~9 words
+      chunkText = punctMatch[1];
+    } else {
+      // No good break — just take CHUNK_WORD_COUNT words
+      chunkText = words.slice(0, CHUNK_WORD_COUNT).join(' ');
+    }
+
+    broadcastText(chunkText);
+    lastInterimSent = (lastInterimSent + ' ' + chunkText).trim();
+  }
 }
 
 // ═══════════════════════════════════════════════════════
