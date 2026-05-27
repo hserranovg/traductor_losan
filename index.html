@@ -45,9 +45,9 @@
     overflow-x: hidden;
   }
 
-  /* ── HEADER (LOSAN brand) ── */
+  /* ── BRAND HEADER ── */
   .brand-header {
-    padding: 1.5rem 2rem;
+    padding: 1.75rem 2rem;
     border-bottom: 1px solid var(--line);
     display:flex;
     align-items:center;
@@ -56,20 +56,20 @@
   }
 
   .brand-logo {
-    height: 22px;
+    height: 36px;
     width: auto;
   }
 
   .brand-tagline {
     font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
     font-style: italic;
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     color: var(--muted);
     letter-spacing: 0.02em;
   }
 
   /* ── VIEWS ── */
-  .view { display:none; min-height: calc(100vh - 60px); }
+  .view { display:none; min-height: calc(100vh - 90px); }
   .view.active { display:flex; flex-direction:column; }
 
   /* ═══════════════════════════════════════════════════
@@ -85,7 +85,7 @@
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 90px);
   }
 
   .landing-left {
@@ -214,7 +214,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 5rem;
+    width: 80px;
+    height: 80px;
     opacity: 0.15;
   }
 
@@ -229,7 +230,7 @@
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 380px;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 90px);
   }
 
   .presenter-main {
@@ -289,11 +290,34 @@
 
   /* MIC */
   .mic-section {
-    padding: 3rem 0;
+    padding: 2rem 0 3rem;
     display:flex;
     flex-direction:column;
     align-items:center;
     gap: 1.5rem;
+  }
+
+  .mic-btn-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .mic-level-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    transition: transform 0.1s ease-out, border-color 0.2s;
+    transform: scale(1);
+    pointer-events: none;
+  }
+
+  .mic-btn-wrap.recording .mic-level-ring {
+    border-color: var(--danger);
   }
 
   .mic-btn {
@@ -307,33 +331,15 @@
     justify-content:center;
     transition: all 0.3s ease;
     position: relative;
-  }
-
-  .mic-btn::after {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border: 1px solid transparent;
-    border-radius: 50%;
-    transition: all 0.3s;
+    z-index: 2;
   }
 
   .mic-btn:hover { transform: scale(1.02); }
-  .mic-btn:hover::after { border-color: var(--line); }
 
   .mic-btn.recording {
     background: var(--text);
     color: var(--bg);
     border-color: var(--text);
-  }
-  .mic-btn.recording::after {
-    border-color: var(--danger);
-    inset: -12px;
-    animation: ring-pulse 1.6s infinite;
-  }
-  @keyframes ring-pulse {
-    0%,100% { opacity:1; inset:-12px; }
-    50% { opacity:0.3; inset:-20px; }
   }
 
   .mic-icon {
@@ -344,10 +350,55 @@
   }
 
   .mic-status {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--muted);
     font-family: 'DM Sans Italic', sans-serif;
     font-style: italic;
+    text-align:center;
+  }
+
+  /* SOUND METER */
+  .sound-meter {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 0.5rem;
+    display:flex;
+    flex-direction:column;
+    gap: 0.6rem;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+  }
+
+  .sound-meter.active { opacity: 1; }
+
+  .meter-label {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meter-label .level-text {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .meter-bars {
+    display:flex;
+    gap: 3px;
+    height: 32px;
+    align-items: flex-end;
+  }
+
+  .meter-bar {
+    flex: 1;
+    background: var(--line);
+    border-radius: 1px;
+    transition: background 0.15s, height 0.08s;
+    height: 6px;
   }
 
   /* LANGUAGES */
@@ -789,6 +840,27 @@
     text-decoration: line-through;
   }
 
+  /* ERROR/INFO BANNER */
+  .info-banner {
+    padding: 0.75rem 1rem;
+    background: #fff8e1;
+    border: 1px solid #f4d160;
+    color: #5c4400;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    line-height: 1.5;
+  }
+  .info-banner.error {
+    background: #ffebee;
+    border-color: #ffaaaa;
+    color: #8b0000;
+  }
+  .info-banner.success {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+    color: #1b5e20;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 900px) {
     .landing-grid { grid-template-columns: 1fr; }
@@ -798,18 +870,20 @@
     .qr-sidebar { border-top: 1px solid var(--line); }
     .presenter-main { padding: 2rem 1.5rem; border-right: none; }
     .lang-grid { grid-template-columns: repeat(2, 1fr); }
+    .brand-logo { height: 28px; }
   }
 
   @media (max-width: 480px) {
-    .brand-header { padding: 1rem 1.5rem; }
+    .brand-header { padding: 1.25rem 1.5rem; }
     .brand-tagline { display: none; }
     .lang-grid { grid-template-columns: 1fr; }
+    .brand-logo { height: 24px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════ BRAND HEADER ════════════════════════════ -->
+<!-- ════════════════════════════ BRAND HEADER (always visible) ════════════════════════════ -->
 <header class="brand-header">
   <img src="logo.png" alt="LOSAN" class="brand-logo">
   <span class="brand-tagline">live translation</span>
@@ -860,7 +934,6 @@
   <div class="presenter-grid">
     <div class="presenter-main">
 
-      <!-- SECTION: STATUS -->
       <div class="section-head">
         <h2 class="section-title">Panel del <em>presentador</em></h2>
         <div class="status-indicator">
@@ -869,17 +942,33 @@
         </div>
       </div>
 
-      <!-- MIC -->
+      <!-- MIC + SOUND METER -->
       <div class="mic-section">
-        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
-          <svg class="mic-icon" viewBox="0 0 24 24">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="23"/>
-            <line x1="8" y1="23" x2="16" y2="23"/>
-          </svg>
-        </button>
+        <div class="mic-btn-wrap" id="mic-btn-wrap">
+          <div class="mic-level-ring" id="mic-level-ring"></div>
+          <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+            <svg class="mic-icon" viewBox="0 0 24 24">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+        </div>
         <p class="mic-status" id="mic-status">Pulsa el micrófono para empezar</p>
+
+        <!-- Sound level meter -->
+        <div class="sound-meter" id="sound-meter">
+          <div class="meter-label">
+            <span>Nivel de entrada</span>
+            <span class="level-text" id="level-text">—</span>
+          </div>
+          <div class="meter-bars" id="meter-bars">
+            <!-- 20 bars generated by JS -->
+          </div>
+        </div>
+
+        <div id="info-banner-container"></div>
       </div>
 
       <!-- LANGUAGES -->
@@ -1029,27 +1118,41 @@ let audioEnabled = true;
 let pendingQueue = [];
 let isSpeaking = false;
 
+// Audio analysis (sound meter)
+let audioContext = null;
+let analyser = null;
+let micStream = null;
+let meterRAF = null;
+
 const CHANNEL_KEY = 'losan_livelang_msg';
+
+// Build meter bars
+(function buildBars(){
+  const bars = document.getElementById('meter-bars');
+  for (let i = 0; i < 24; i++) {
+    const b = document.createElement('div');
+    b.className = 'meter-bar';
+    bars.appendChild(b);
+  }
+})();
 
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function goPresenter() {
-  showView('presenter');
-  initPresenter();
-}
+function goPresenter() { showView('presenter'); initPresenter(); }
+function goAttendee(sid) { if (sid) sessionId = sid; showView('attendee'); initAttendee(); }
+function goLanding() { stopRecording(); stopMeter(); showView('landing'); }
 
-function goAttendee(sid) {
-  if (sid) sessionId = sid;
-  showView('attendee');
-  initAttendee();
+function showBanner(msg, type) {
+  const el = document.getElementById('info-banner-container');
+  if (!el) return;
+  el.innerHTML = `<div class="info-banner ${type||''}">${msg}</div>`;
 }
-
-function goLanding() {
-  stopRecording();
-  showView('landing');
+function clearBanner() {
+  const el = document.getElementById('info-banner-container');
+  if (el) el.innerHTML = '';
 }
 
 function initPresenter() {
@@ -1065,6 +1168,11 @@ function initPresenter() {
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.M
   });
+
+  // Check HTTPS
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    showBanner('⚠ Estás en HTTP. El navegador bloqueará el micrófono. La página debe servirse por HTTPS.', 'error');
+  }
 }
 
 function buildAttendeeURL() {
@@ -1087,9 +1195,25 @@ function toggleRecording() {
   if (isRecording) stopRecording(); else startRecording();
 }
 
-function startRecording() {
+async function startRecording() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.');
+    showBanner('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge desde el ordenador.', 'error');
+    return;
+  }
+
+  // First: request mic access and start the sound meter so user can see input level
+  try {
+    await startMeter();
+  } catch (err) {
+    let msg = 'No se pudo acceder al micrófono.';
+    if (err && err.name === 'NotAllowedError') {
+      msg = 'Permiso de micrófono denegado. Pulsa el icono 🔒 de la barra de direcciones y permite el micrófono.';
+    } else if (err && err.name === 'NotFoundError') {
+      msg = 'No se ha encontrado ningún micrófono conectado.';
+    } else if (err && err.message) {
+      msg = 'Error con el micrófono: ' + err.message;
+    }
+    showBanner(msg, 'error');
     return;
   }
 
@@ -1103,11 +1227,13 @@ function startRecording() {
   recognition.onstart = () => {
     isRecording = true;
     document.getElementById('mic-btn').classList.add('recording');
+    document.getElementById('mic-btn-wrap').classList.add('recording');
     document.getElementById('rec-dot').classList.add('active');
     document.getElementById('rec-label').textContent = 'En directo';
     document.getElementById('mic-status').textContent = 'Escuchando... habla con normalidad';
     document.getElementById('state-display').textContent = 'Retransmitiendo';
     document.getElementById('empty-msg')?.remove();
+    showBanner('✓ Micrófono activo. Observa la barra de nivel — debe moverse cuando hablas.', 'success');
   };
 
   recognition.onresult = (e) => {
@@ -1128,9 +1254,16 @@ function startRecording() {
   };
 
   recognition.onerror = (e) => {
-    if (e.error === 'no-speech') return;
     console.error('Speech error:', e.error);
-    document.getElementById('mic-status').textContent = 'Error: ' + e.error;
+    if (e.error === 'no-speech') return;
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      showBanner('Permiso de micrófono denegado por el navegador.', 'error');
+      stopRecording();
+    } else if (e.error === 'network') {
+      showBanner('Error de red. El reconocimiento de voz necesita Internet.', 'error');
+    } else {
+      showBanner('Error de reconocimiento: ' + e.error, 'error');
+    }
   };
 
   recognition.onend = () => {
@@ -1139,13 +1272,15 @@ function startRecording() {
     }
   };
 
-  try { recognition.start(); } catch(err) { console.error(err); }
+  try { recognition.start(); }
+  catch(err) { console.error(err); showBanner('No se pudo iniciar el reconocimiento.', 'error'); }
 }
 
 function stopRecording() {
   isRecording = false;
   if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
+  document.getElementById('mic-btn-wrap')?.classList.remove('recording');
   document.getElementById('rec-dot')?.classList.remove('active');
   const recLabel = document.getElementById('rec-label');
   if (recLabel) recLabel.textContent = 'En espera';
@@ -1153,6 +1288,92 @@ function stopRecording() {
   if (micStatus) micStatus.textContent = 'Pulsa el micrófono para empezar';
   const stateDisp = document.getElementById('state-display');
   if (stateDisp) stateDisp.textContent = 'Inactivo';
+  stopMeter();
+  clearBanner();
+}
+
+// ── SOUND METER ──
+async function startMeter() {
+  micStream = await navigator.mediaDevices.getUserMedia({
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true
+    }
+  });
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioContext.createMediaStreamSource(micStream);
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  analyser.smoothingTimeConstant = 0.6;
+  source.connect(analyser);
+
+  document.getElementById('sound-meter').classList.add('active');
+  drawMeter();
+}
+
+function drawMeter() {
+  if (!analyser) return;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+
+  // Calculate avg volume
+  let sum = 0;
+  for (let i = 0; i < data.length; i++) sum += data[i];
+  const avg = sum / data.length;
+  const level = Math.min(100, Math.round((avg / 128) * 100));
+
+  // Update bars
+  const bars = document.querySelectorAll('.meter-bar');
+  const activeBars = Math.round((level / 100) * bars.length);
+  bars.forEach((bar, i) => {
+    if (i < activeBars) {
+      // Color based on position: green-ish dark for low, danger for high
+      if (i < bars.length * 0.6) bar.style.background = 'var(--text)';
+      else if (i < bars.length * 0.85) bar.style.background = '#d4af37';
+      else bar.style.background = 'var(--danger)';
+      bar.style.height = Math.max(6, 6 + (i / bars.length) * 26) + 'px';
+    } else {
+      bar.style.background = 'var(--line)';
+      bar.style.height = '6px';
+    }
+  });
+
+  // Text indicator
+  const txt = document.getElementById('level-text');
+  if (txt) {
+    if (level < 5) txt.textContent = 'silencio';
+    else if (level < 20) txt.textContent = 'bajo';
+    else if (level < 50) txt.textContent = 'óptimo';
+    else if (level < 80) txt.textContent = 'alto';
+    else txt.textContent = 'saturado';
+  }
+
+  // Ring expansion based on level
+  const ring = document.getElementById('mic-level-ring');
+  if (ring) {
+    const scale = 1 + (level / 100) * 0.15;
+    ring.style.transform = `scale(${scale})`;
+  }
+
+  meterRAF = requestAnimationFrame(drawMeter);
+}
+
+function stopMeter() {
+  if (meterRAF) { cancelAnimationFrame(meterRAF); meterRAF = null; }
+  if (analyser) { try { analyser.disconnect(); } catch(_) {} analyser = null; }
+  if (audioContext) { try { audioContext.close(); } catch(_) {} audioContext = null; }
+  if (micStream) {
+    micStream.getTracks().forEach(t => t.stop());
+    micStream = null;
+  }
+  document.getElementById('sound-meter')?.classList.remove('active');
+  const txt = document.getElementById('level-text');
+  if (txt) txt.textContent = '—';
+  const bars = document.querySelectorAll('.meter-bar');
+  bars.forEach(b => { b.style.background = 'var(--line)'; b.style.height = '6px'; });
+  const ring = document.getElementById('mic-level-ring');
+  if (ring) ring.style.transform = 'scale(1)';
 }
 
 function broadcastText(text) {
