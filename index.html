@@ -250,6 +250,38 @@
     align-items:center;
     gap: 1.5rem;
   }
+  .mic-row {
+    display:flex;
+    align-items:center;
+    gap: 1.5rem;
+  }
+  .mute-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--line-dark);
+    background: var(--bg);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: all 0.2s;
+    color: var(--muted);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .mute-btn.enabled {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mute-btn:hover { background: var(--surface); border-color: var(--text); color: var(--text); }
+  .mute-btn.muted {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+  }
+  .mute-btn.muted:hover { background: #a30d24; border-color: #a30d24; color: white; }
+  .mute-icon { width: 24px; height: 24px; stroke: currentColor; stroke-width: 1.5; fill: none; }
   .mic-btn-wrap {
     position: relative;
     width: 180px;
@@ -796,14 +828,22 @@
         </div>
       </div>
       <div class="mic-section">
-        <div class="mic-btn-wrap" id="mic-btn-wrap">
-          <div class="mic-level-ring" id="mic-level-ring"></div>
-          <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
-            <svg class="mic-icon" viewBox="0 0 24 24">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" y1="19" x2="12" y2="23"/>
-              <line x1="8" y1="23" x2="16" y2="23"/>
+        <div class="mic-row">
+          <div class="mic-btn-wrap" id="mic-btn-wrap">
+            <div class="mic-level-ring" id="mic-level-ring"></div>
+            <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+              <svg class="mic-icon" viewBox="0 0 24 24">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Silenciar transmisión sin parar el micrófono">
+            <svg class="mute-icon" viewBox="0 0 24 24" id="mute-icon-on">
+              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
             </svg>
           </button>
         </div>
@@ -933,10 +973,12 @@ let pendingQueue = [];
 let isSpeaking = false;
 let isPresenter = false;
 
-// Interim chunking — send every N words even while still speaking
-const CHUNK_WORD_COUNT = 15;
-let lastInterimSent = '';   // last interim text already sent to attendees
-let lastSentText = '';      // tracks what was last broadcast
+// Interim chunking — send text in natural chunks for better voice quality
+const CHUNK_MIN_WORDS = 8;      // minimum words before considering a chunk
+const CHUNK_MAX_WORDS = 25;     // force chunk at this point even without punctuation
+let lastInterimSent = '';
+let lastSentText = '';
+let isMuted = false;  // when true, transcript still works but not broadcast
 
 let audioContext = null;
 let analyser = null;
@@ -1150,6 +1192,32 @@ function toggleRecording() {
   if (isRecording) stopRecording(); else startRecording();
 }
 
+function toggleMute() {
+  if (!isRecording) return; // mute only works while recording
+  isMuted = !isMuted;
+  const btn = document.getElementById('mute-btn');
+  const icon = document.getElementById('mute-icon-on');
+  if (isMuted) {
+    btn.classList.add('muted');
+    // Switch icon to muted speaker (with X)
+    icon.innerHTML = `
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>
+    `;
+    document.getElementById('mic-status').textContent = 'Transmisión pausada — el micrófono sigue activo';
+  } else {
+    btn.classList.remove('muted');
+    icon.innerHTML = `
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    `;
+    document.getElementById('mic-status').textContent = 'Escuchando... habla con normalidad';
+    // Reset chunk trackers so next chunk starts fresh
+    lastInterimSent = '';
+  }
+}
+
 async function startRecording() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showBanner('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge desde el ordenador.', 'error');
@@ -1181,6 +1249,9 @@ async function startRecording() {
     isRecording = true;
     lastInterimSent = '';
     lastSentText = '';
+    isMuted = false;
+    document.getElementById('mute-btn').classList.add('enabled');
+    document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
     document.getElementById('mic-btn-wrap').classList.add('recording');
     document.getElementById('rec-dot').classList.add('active');
@@ -1244,10 +1315,13 @@ async function startRecording() {
 
 function stopRecording() {
   isRecording = false;
+  isMuted = false;
   if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
   document.getElementById('mic-btn-wrap')?.classList.remove('recording');
   document.getElementById('rec-dot')?.classList.remove('active');
+  document.getElementById('mute-btn')?.classList.remove('enabled');
+  document.getElementById('mute-btn')?.classList.remove('muted');
   const recLabel = document.getElementById('rec-label');
   if (recLabel) recLabel.textContent = 'En espera';
   const micStatus = document.getElementById('mic-status');
@@ -1325,6 +1399,7 @@ function stopMeter() {
 
 function broadcastText(text) {
   if (!text || !text.trim()) return;
+  if (isMuted) return;  // mute = don't send anything to attendees
   sendFirebaseMessage({ type: 'transcript', text: text.trim() });
 }
 
@@ -1339,8 +1414,7 @@ function extractNewPart(current, alreadySent) {
   return current;
 }
 
-// Check if interim text has grown enough to send a chunk
-// Prefers breaking at punctuation for better translation quality
+// Smarter chunking — prefer punctuation, wait until we have enough content
 function checkInterimChunking(interim) {
   if (!interim) return;
   const newPart = extractNewPart(interim, lastInterimSent);
@@ -1348,25 +1422,31 @@ function checkInterimChunking(interim) {
 
   const words = newPart.trim().split(/\s+/);
 
-  // If we have enough words, try to find a natural break point
-  if (words.length >= CHUNK_WORD_COUNT) {
-    let chunkText = '';
+  // Strategy:
+  // 1. If we have at least MIN words AND there's punctuation → send up to last punctuation
+  // 2. If we have MAX words without any punctuation → force send MAX words
+  // 3. Otherwise wait
 
-    // Look for a punctuation break (. , ; : ?) in the first 25 words
-    const searchWords = words.slice(0, Math.min(25, words.length));
-    const candidate = searchWords.join(' ');
-    const punctMatch = candidate.match(/^([\s\S]+?[.,;:?!])\s/);
+  if (words.length < CHUNK_MIN_WORDS) return;
 
-    if (punctMatch && punctMatch[1].split(/\s+/).length >= Math.floor(CHUNK_WORD_COUNT * 0.6)) {
-      // Found a natural break with at least ~9 words
-      chunkText = punctMatch[1];
-    } else {
-      // No good break — just take CHUNK_WORD_COUNT words
-      chunkText = words.slice(0, CHUNK_WORD_COUNT).join(' ');
+  // Look for the last natural break point in current text
+  const punctMatch = newPart.match(/^([\s\S]+[.,;:?!])\s/);
+
+  if (punctMatch) {
+    const chunk = punctMatch[1].trim();
+    const chunkWords = chunk.split(/\s+/).length;
+    if (chunkWords >= CHUNK_MIN_WORDS) {
+      broadcastText(chunk);
+      lastInterimSent = (lastInterimSent + ' ' + chunk).trim();
+      return;
     }
+  }
 
-    broadcastText(chunkText);
-    lastInterimSent = (lastInterimSent + ' ' + chunkText).trim();
+  // No suitable punctuation — only force-send if we hit MAX
+  if (words.length >= CHUNK_MAX_WORDS) {
+    const chunk = words.slice(0, CHUNK_MAX_WORDS).join(' ');
+    broadcastText(chunk);
+    lastInterimSent = (lastInterimSent + ' ' + chunk).trim();
   }
 }
 
