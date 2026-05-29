@@ -4,19 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LOSAN — Live Translation</title>
+<link rel="icon" type="image/png" href="isologo.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet">
 <style>
-  @font-face {
-    font-family: 'DM Sans Italic';
-    src: url('DMSans-Italic.ttf') format('truetype-variations');
-    font-weight: 100 900;
-    font-style: italic;
-    font-display: swap;
-  }
-
   :root {
     --bg: #ffffff;
     --surface: #fafafa;
@@ -53,7 +46,7 @@
   }
   .brand-logo { height: 54px; width: auto; }
   .brand-tagline {
-    font-family: 'DM Sans Italic', 'DM Sans', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     font-size: 0.85rem;
     color: var(--muted);
@@ -119,7 +112,7 @@
     letter-spacing: -0.02em;
   }
   .landing-title em {
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     font-weight: 300;
   }
@@ -183,14 +176,14 @@
     font-weight: 500;
     box-shadow: 0 1px 0 rgba(0,0,0,0.04);
   }
-  .visual-block-icon {
+  .visual-block-isologo {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
-    opacity: 0.15;
+    width: 45%;
+    height: auto;
+    opacity: 0.85;
   }
 
   #presenter { flex-direction: column; }
@@ -216,7 +209,7 @@
   }
   .section-title { font-size: 1.4rem; font-weight: 400; letter-spacing: -0.01em; }
   .section-title em {
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     font-weight: 300;
     color: var(--muted);
@@ -323,7 +316,7 @@
   .mic-status {
     font-size: 0.95rem;
     color: var(--muted);
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     text-align:center;
   }
@@ -401,12 +394,12 @@
   #final-text { color: var(--text); }
   #interim-text {
     color: var(--muted);
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
   }
   .transcript-empty {
     color: var(--muted);
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
   }
 
@@ -425,7 +418,7 @@
     font-size: 0.85rem;
     color: var(--muted);
     line-height: 1.6;
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
   }
   .session-info {
@@ -534,6 +527,23 @@
     transition: opacity 0.3s;
   }
   .audio-now-playing.playing { opacity: 1; }
+  .now-playing-isologo {
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    animation: rotate 8s linear infinite;
+    animation-play-state: paused;
+  }
+  .audio-now-playing.playing .now-playing-isologo {
+    opacity: 1;
+    animation-play-state: running;
+  }
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .waveform { display:flex; align-items:center; gap: 3px; height: 28px; }
   .bar { width: 2px; background: var(--text); height: 6px; }
   .audio-now-playing.playing .bar { animation: wave 1.2s ease-in-out infinite; }
@@ -543,7 +553,7 @@
   .bar:nth-child(4) { animation-delay: 0.3s; }
   .bar:nth-child(5) { animation-delay: 0.15s; }
   .now-playing-text {
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     font-size: 0.85rem;
     color: var(--muted);
@@ -571,7 +581,7 @@
     font-size: 0.78rem;
     color: var(--muted);
     margin-bottom: 0.4rem;
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     line-height: 1.5;
   }
@@ -592,8 +602,7 @@
     color: var(--muted);
   }
   .waiting-pulse {
-    width: 80px; height: 80px;
-    border: 1px solid var(--line-dark);
+    width: 100px; height: 100px;
     border-radius: 50%;
     display:flex;
     align-items:center;
@@ -603,21 +612,21 @@
   .waiting-pulse::before {
     content:'';
     position: absolute;
-    inset: -8px;
+    inset: 0;
     border: 1px solid var(--line);
     border-radius: 50%;
     animation: expand 2s infinite;
   }
   @keyframes expand {
-    0% { inset: -8px; opacity:1; }
-    100% { inset: -24px; opacity:0; }
+    0% { inset: 0; opacity:1; }
+    100% { inset: -20px; opacity:0; }
   }
-  .waiting-pulse svg { width: 32px; height: 32px; stroke: var(--muted); stroke-width: 1.2; fill: none; }
+  .waiting-isologo { width: 70px; height: 70px; opacity: 0.7; }
   .waiting-state-title { font-size: 1rem; color: var(--text); }
   .waiting-state-sub {
     font-size: 0.85rem;
     color: var(--muted);
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
   }
 
@@ -691,14 +700,14 @@
     max-width: 480px;
   }
   .audio-unlock-title em {
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     font-weight: 300;
   }
   .audio-unlock-sub {
     font-size: 0.95rem;
     color: var(--muted);
-    font-family: 'DM Sans Italic', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-style: italic;
     max-width: 360px;
     line-height: 1.6;
@@ -733,8 +742,9 @@
     line-height: 1.6;
     margin-top: 1rem;
   }
-  .audio-unlock-logo {
-    height: 40px;
+  .audio-unlock-isologo {
+    width: 80px;
+    height: 80px;
     margin-bottom: 1rem;
   }
 
@@ -769,7 +779,7 @@
 
 <!-- AUDIO UNLOCK OVERLAY (for attendees, mostly iOS) -->
 <div class="audio-unlock" id="audio-unlock">
-  <img src="logo.png" alt="LOSAN" class="audio-unlock-logo">
+  <img src="isologo.png" alt="" class="audio-unlock-isologo">
   <div class="audio-unlock-eyebrow">Casi listo</div>
   <h2 class="audio-unlock-title">Toca para <em>empezar a escuchar</em></h2>
   <p class="audio-unlock-sub">Tu navegador necesita un toque tuyo para activar el audio de la traducción.</p>
@@ -805,12 +815,7 @@
     </div>
     <div class="landing-right">
       <div class="visual-block">
-        <svg class="visual-block-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
+        <img src="isologo.png" alt="" class="visual-block-isologo">
         <div class="visual-block-label">Live</div>
       </div>
     </div>
@@ -907,6 +912,7 @@
     </div>
     <div class="audio-zone" id="audio-zone">
       <div class="audio-now-playing" id="now-playing">
+        <img src="isologo.png" alt="" class="now-playing-isologo">
         <div class="waveform">
           <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
@@ -915,10 +921,7 @@
       <div class="translation-feed" id="translation-feed">
         <div class="waiting-state" id="waiting-msg">
           <div class="waiting-pulse">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-            </svg>
+            <img src="isologo.png" alt="" class="waiting-isologo">
           </div>
           <div class="waiting-state-title">Esperando al presentador</div>
           <div class="waiting-state-sub">El audio traducido aparecerá aquí en cuanto empiece</div>
