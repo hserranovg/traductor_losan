@@ -83,20 +83,17 @@
   .view { display:none; min-height: calc(100vh - 90px); }
   .view.active { display:flex; flex-direction:column; }
 
-  #landing { align-items:stretch; justify-content:stretch; padding: 0; }
-  .landing-grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: calc(100vh - 90px);
+  #landing {
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
   }
-  .landing-left {
-    padding: 5rem 4rem;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
+  .landing-content {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
-    border-right: 1px solid var(--line);
   }
   .eyebrow {
     font-size: 0.7rem;
@@ -143,48 +140,6 @@
   .role-card-content p { font-size: 0.85rem; color: var(--muted); }
   .role-card-arrow { font-size: 1.5rem; transition: transform 0.3s ease; }
   .role-card:hover .role-card-arrow { transform: translateX(8px); }
-  .landing-right {
-    background: var(--surface);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding: 4rem;
-    overflow: hidden;
-  }
-  .visual-block {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    aspect-ratio: 3/4;
-    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-    overflow: hidden;
-  }
-  .visual-block::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(0,0,0,0.02) 20px, rgba(0,0,0,0.02) 21px);
-  }
-  .visual-block-label {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 0.6rem 2.5rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-  }
-  .visual-block-isologo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 45%;
-    height: auto;
-    opacity: 0.85;
-  }
 
   #presenter { flex-direction: column; }
   .presenter-grid {
@@ -749,9 +704,7 @@
   }
 
   @media (max-width: 900px) {
-    .landing-grid { grid-template-columns: 1fr; }
-    .landing-right { display: none; }
-    .landing-left { padding: 3rem 2rem; }
+    #landing { padding: 3rem 1.5rem; }
     .presenter-grid { grid-template-columns: 1fr; }
     .qr-sidebar { border-top: 1px solid var(--line); }
     .presenter-main { padding: 2rem 1.5rem; border-right: none; }
@@ -791,32 +744,24 @@
 </div>
 
 <div id="landing" class="view active">
-  <div class="landing-grid">
-    <div class="landing-left">
-      <div class="eyebrow">LOSAN — Nueva temporada</div>
-      <h1 class="landing-title">Una voz.<br><em>Todas las lenguas.</em></h1>
-      <p class="landing-sub">Hoy presentamos lo que viene. Y queremos que cada palabra te llegue exactamente como la pensamos — sin importar el idioma en el que la escuches. La moda no entiende de fronteras. Nuestra voz, tampoco.</p>
-      <div class="role-cards">
-        <div class="role-card" onclick="goPresenter()">
-          <div class="role-card-content">
-            <h3>Presentador</h3>
-            <p>Hablar al público y generar QR de acceso</p>
-          </div>
-          <span class="role-card-arrow">→</span>
+  <div class="landing-content">
+    <div class="eyebrow">LOSAN — Nueva temporada</div>
+    <h1 class="landing-title">Una voz.<br><em>Todas las lenguas.</em></h1>
+    <p class="landing-sub">Hoy presentamos lo que viene. Y queremos que cada palabra te llegue exactamente como la pensamos — sin importar el idioma en el que la escuches. La moda no entiende de fronteras. Nuestra voz, tampoco.</p>
+    <div class="role-cards">
+      <div class="role-card" onclick="goPresenter()">
+        <div class="role-card-content">
+          <h3>Presentador</h3>
+          <p>Hablar al público y generar QR de acceso</p>
         </div>
-        <div class="role-card" onclick="goAttendee()">
-          <div class="role-card-content">
-            <h3>Asistente</h3>
-            <p>Escuchar la traducción en mi idioma</p>
-          </div>
-          <span class="role-card-arrow">→</span>
-        </div>
+        <span class="role-card-arrow">→</span>
       </div>
-    </div>
-    <div class="landing-right">
-      <div class="visual-block">
-        <img src="isologo.png" alt="" class="visual-block-isologo">
-        <div class="visual-block-label">Live</div>
+      <div class="role-card" onclick="goAttendee()">
+        <div class="role-card-content">
+          <h3>Asistente</h3>
+          <p>Escuchar la traducción en mi idioma</p>
+        </div>
+        <span class="role-card-arrow">→</span>
       </div>
     </div>
   </div>
