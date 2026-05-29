@@ -366,8 +366,54 @@
     gap: 2rem;
   }
   .qr-box { display:flex; flex-direction:column; align-items:center; gap: 1.25rem; }
-  #qr-code { background: white; padding: 16px; border: 1px solid var(--line); }
-  #qr-code img, #qr-code canvas { display: block; }
+
+  .qr-frame {
+    background: white;
+    padding: 1.25rem 1rem 1rem;
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .qr-frame-logo {
+    height: 16px;
+    width: auto;
+    margin-bottom: 0.1rem;
+  }
+
+  .qr-wrap {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+  }
+
+  #qr-code {
+    background: white;
+    line-height: 0;
+  }
+  #qr-code img, #qr-code canvas {
+    display: block;
+  }
+
+  .qr-isologo-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-isologo {
+    width: 36px;
+    height: 36px;
+    display: block;
+  }
   .qr-instruction {
     text-align: center;
     font-size: 0.85rem;
@@ -824,7 +870,15 @@
     <aside class="qr-sidebar">
       <div class="qr-box">
         <div class="eyebrow">Acceso para asistentes</div>
-        <div id="qr-code"></div>
+        <div class="qr-frame">
+          <img src="logo.png" alt="LOSAN" class="qr-frame-logo">
+          <div class="qr-wrap">
+            <div id="qr-code"></div>
+            <div class="qr-isologo-wrap">
+              <img src="isologo.png" alt="" class="qr-isologo">
+            </div>
+          </div>
+        </div>
         <p class="qr-instruction">Escanea con la cámara<br>de tu móvil</p>
       </div>
       <div class="session-info">
@@ -1107,11 +1161,11 @@ function initPresenter() {
   document.getElementById('qr-code').innerHTML = '';
   new QRCode(document.getElementById('qr-code'), {
     text: attendeeURL,
-    width: 180,
-    height: 180,
+    width: 200,
+    height: 200,
     colorDark: '#0a0a0a',
     colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
+    correctLevel: QRCode.CorrectLevel.H
   });
 
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
