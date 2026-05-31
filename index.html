@@ -846,6 +846,7 @@
     width: 80px;
     height: 80px;
     margin-bottom: 1rem;
+    animation: liveBreath 2.4s ease-in-out infinite;
   }
 
   @media (max-width: 900px) {
@@ -1327,7 +1328,7 @@ function startLandingRotation() {
         el.classList.remove('rotating');
       });
     }, 400);
-  }, 4000);
+  }, 8000);
 }
 
 function stopLandingRotation() {
