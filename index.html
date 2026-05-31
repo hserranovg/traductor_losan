@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,6 +94,37 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+  }
+  .landing-content .eyebrow,
+  .landing-content .landing-title,
+  .landing-content .landing-sub,
+  .landing-content .role-card-content h3,
+  .landing-content .role-card-content p,
+  .qr-sidebar .eyebrow,
+  .qr-sidebar .qr-instruction,
+  #audio-unlock .audio-unlock-eyebrow,
+  #audio-unlock .audio-unlock-title,
+  #audio-unlock .audio-unlock-sub,
+  #audio-unlock .audio-unlock-btn,
+  #audio-unlock .unlock-warning {
+    transition: opacity 0.4s ease;
+  }
+  #landing.rotating .eyebrow,
+  #landing.rotating .landing-title,
+  #landing.rotating .landing-sub,
+  #landing.rotating .role-card-content h3,
+  #landing.rotating .role-card-content p,
+  .qr-sidebar.rotating .eyebrow,
+  .qr-sidebar.rotating .qr-instruction,
+  #audio-unlock.rotating .audio-unlock-eyebrow,
+  #audio-unlock.rotating .audio-unlock-title,
+  #audio-unlock.rotating .audio-unlock-sub,
+  #audio-unlock.rotating .audio-unlock-btn,
+  #audio-unlock.rotating .unlock-warning {
+    opacity: 0;
+  }
+  #audio-unlock.rotating .unlock-warning {
+    animation: none;
   }
   .eyebrow {
     font-size: 0.7rem;
@@ -465,6 +496,11 @@
     text-transform: uppercase;
     color: var(--danger);
     font-weight: 500;
+    animation: liveBreath 2.4s ease-in-out infinite;
+  }
+  @keyframes liveBreath {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
   }
   .session-tag {
     font-size: 0.7rem;
@@ -479,14 +515,54 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .attendee-lang-current {
+    font-size: 1.45rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1;
     margin-bottom: 1rem;
   }
   .lang-scroll {
-    display:flex;
+    display: flex;
     gap: 0.5rem;
     overflow-x: auto;
     padding-bottom: 0.25rem;
     scrollbar-width: none;
+  }
+  .lang-scroll::-webkit-scrollbar { display:none; }
+
+  .keep-screen-notice {
+    position: relative;
+    margin-top: 1rem;
+    padding-left: 1.1rem;
+    color: var(--danger);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+  }
+  /* small red blinking dot to the left, always */
+  .keep-screen-notice::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.18);
+    animation: keepDot 1.6s ease-in-out infinite;
+  }
+  @keyframes keepDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  /* text breathes only during the first ~60s, then stays solid */
+  .keep-screen-notice.breathing {
+    animation: liveBreath 2.4s ease-in-out infinite;
   }
   .lang-scroll::-webkit-scrollbar { display:none; }
   .lang-pill {
@@ -736,12 +812,35 @@
     height: 20px;
     fill: currentColor;
   }
-  .audio-unlock-hint {
-    font-size: 0.75rem;
-    color: var(--muted);
-    max-width: 320px;
-    line-height: 1.6;
-    margin-top: 1rem;
+  .audio-unlock-warnings {
+    margin-top: 1.25rem;
+    max-width: 460px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .unlock-warning {
+    position: relative;
+    padding-left: 1.1rem;
+    color: var(--danger);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    font-weight: 500;
+    text-align: left;
+    animation: liveBreath 2.4s ease-in-out infinite;
+  }
+  .unlock-warning::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.18);
+    animation: keepDot 1.6s ease-in-out infinite;
   }
   .audio-unlock-isologo {
     width: 80px;
@@ -764,14 +863,6 @@
     .brand-logo { height: 32px; }
   }
 </style>
-
-<!--[if gte mso 9]><xml>
-<mso:CustomDocumentProperties>
-<mso:_dlc_DocId msdt:dt="string">TTPJFR6AHWHV-851053998-63067</mso:_dlc_DocId>
-<mso:_dlc_DocIdItemGuid msdt:dt="string">dfc31bd0-dc03-49fe-bcaf-591c25b92d97</mso:_dlc_DocIdItemGuid>
-<mso:_dlc_DocIdUrl msdt:dt="string">https://vangreeneurope.sharepoint.com/sites/IT2/_layouts/15/DocIdRedir.aspx?ID=TTPJFR6AHWHV-851053998-63067, TTPJFR6AHWHV-851053998-63067</mso:_dlc_DocIdUrl>
-</mso:CustomDocumentProperties>
-</xml><![endif]-->
 </head>
 <body>
 
@@ -787,33 +878,36 @@
 <!-- AUDIO UNLOCK OVERLAY (for attendees, mostly iOS) -->
 <div class="audio-unlock" id="audio-unlock">
   <img src="isologo.png" alt="" class="audio-unlock-isologo">
-  <div class="audio-unlock-eyebrow">Casi listo</div>
-  <h2 class="audio-unlock-title">Toca para <em>empezar a escuchar</em></h2>
-  <p class="audio-unlock-sub">Tu navegador necesita un toque tuyo para activar el audio de la traducción.</p>
+  <div class="audio-unlock-eyebrow" data-i18n="unlock_eyebrow">Casi listo</div>
+  <h2 class="audio-unlock-title" data-i18n-html="unlock_title">Toca para <em>empezar a escuchar</em></h2>
+  <p class="audio-unlock-sub" data-i18n="unlock_sub">Activa el audio y mantén la pantalla encendida durante la presentación. Si bloqueas el móvil, la traducción se pausará.</p>
   <button class="audio-unlock-btn" id="audio-unlock-btn" onclick="unlockAudioAndEnter()">
     <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    Activar audio
+    <span data-i18n="unlock_btn">Activar audio</span>
   </button>
-  <p class="audio-unlock-hint">Si estás en iPhone, asegúrate de que el interruptor lateral de silencio NO está activado (no se ve naranja).</p>
+  <div class="audio-unlock-warnings">
+    <p class="unlock-warning" data-i18n="unlock_hint">Si estás en iPhone, asegúrate de que el interruptor lateral de silencio NO está activado (no se ve naranja).</p>
+    <p class="unlock-warning" data-i18n="unlock_hint_android">Si estás en Android, asegúrate de que el volumen multimedia no esté silenciado.</p>
+  </div>
 </div>
 
 <div id="landing" class="view active">
   <div class="landing-content">
-    <div class="eyebrow">LOSAN — Nueva temporada</div>
-    <h1 class="landing-title">Una voz.<br><em>Todas las lenguas.</em></h1>
-    <p class="landing-sub">Hoy presentamos lo que viene. Y queremos que cada palabra te llegue exactamente como la pensamos — sin importar el idioma en el que la escuches. La moda no entiende de fronteras. Nuestra voz, tampoco.</p>
+    <div class="eyebrow" data-i18n="landing_eyebrow">LOSAN — Nueva temporada</div>
+    <h1 class="landing-title" data-i18n-html="landing_title">Una voz.<br><em>Todas las lenguas.</em></h1>
+    <p class="landing-sub" data-i18n="landing_sub">Hoy presentamos lo que viene. Y queremos que cada palabra te llegue exactamente como la pensamos — sin importar el idioma en el que la escuches. La moda no entiende de fronteras. Nuestra voz, tampoco.</p>
     <div class="role-cards">
       <div class="role-card" onclick="goPresenter()">
         <div class="role-card-content">
-          <h3>Presentador</h3>
-          <p>Hablar al público y generar QR de acceso</p>
+          <h3 data-i18n="role_presenter_title">Presentador</h3>
+          <p data-i18n="role_presenter_desc">Hablar al público y generar QR de acceso</p>
         </div>
         <span class="role-card-arrow">→</span>
       </div>
       <div class="role-card" onclick="goAttendee()">
         <div class="role-card-content">
-          <h3>Asistente</h3>
-          <p>Escuchar la traducción en mi idioma</p>
+          <h3 data-i18n="role_attendee_title">Asistente</h3>
+          <p data-i18n="role_attendee_desc">Escuchar la traducción en mi idioma</p>
         </div>
         <span class="role-card-arrow">→</span>
       </div>
@@ -877,7 +971,7 @@
     </div>
     <aside class="qr-sidebar">
       <div class="qr-box">
-        <div class="eyebrow">Acceso para asistentes</div>
+        <div class="eyebrow" data-i18n="presenter_qr_eyebrow">Acceso para asistentes</div>
         <div class="qr-frame">
           <img src="logo.png" alt="LOSAN" class="qr-frame-logo">
           <div class="qr-wrap">
@@ -887,7 +981,7 @@
             </div>
           </div>
         </div>
-        <p class="qr-instruction">Escanea con la cámara<br>de tu móvil</p>
+        <p class="qr-instruction" data-i18n-html="presenter_qr_instruction">Escanea con la cámara<br>de tu móvil</p>
       </div>
       <div class="session-info">
         <div class="info-row"><span class="info-label">Sesión</span><span class="info-value" id="session-display">—</span></div>
@@ -902,20 +996,22 @@
 <div id="attendee" class="view">
   <div class="attendee-wrap">
     <div class="attendee-status-bar">
-      <div class="live-tag"><span class="dot active"></span>En directo</div>
-      <div class="session-tag">Sesión <b id="attendee-session">—</b></div>
+      <div class="live-tag"><span class="dot active"></span><span data-i18n="attendee_live">En directo</span></div>
+      <div class="session-tag"><span data-i18n="attendee_session">Sesión</span> <b id="attendee-session">—</b></div>
     </div>
     <div class="attendee-lang-section">
-      <div class="attendee-lang-label">Escuchar en</div>
+      <div class="attendee-lang-label" data-i18n="attendee_listening_in">Escuchando en</div>
+      <div class="attendee-lang-current" id="lang-current">English</div>
       <div class="lang-scroll" id="attendee-lang-scroll">
-        <div class="lang-pill selected" data-lang="en">English</div>
-        <div class="lang-pill" data-lang="fr">Français</div>
-        <div class="lang-pill" data-lang="de">Deutsch</div>
-        <div class="lang-pill" data-lang="it">Italiano</div>
-        <div class="lang-pill" data-lang="pt">Português</div>
-        <div class="lang-pill" data-lang="ca">Català</div>
-        <div class="lang-pill" data-lang="es">Español (original)</div>
+        <div class="lang-pill selected" data-lang="en" data-name="English">English</div>
+        <div class="lang-pill" data-lang="fr" data-name="Français">Français</div>
+        <div class="lang-pill" data-lang="de" data-name="Deutsch">Deutsch</div>
+        <div class="lang-pill" data-lang="it" data-name="Italiano">Italiano</div>
+        <div class="lang-pill" data-lang="pt" data-name="Português">Português</div>
+        <div class="lang-pill" data-lang="ca" data-name="Català">Català</div>
+        <div class="lang-pill" data-lang="es" data-name="Español (original)">Español (original)</div>
       </div>
+      <p class="keep-screen-notice" id="keep-screen-notice" data-i18n="attendee_keep_screen">No bloquees ni apagues el móvil — perderías la conexión.</p>
     </div>
     <div class="audio-zone" id="audio-zone">
       <div class="audio-now-playing" id="now-playing">
@@ -923,21 +1019,21 @@
         <div class="waveform">
           <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
-        <span class="now-playing-text">Reproduciendo traducción...</span>
+        <span class="now-playing-text" data-i18n="attendee_now_playing">Reproduciendo traducción...</span>
       </div>
       <div class="translation-feed" id="translation-feed">
         <div class="waiting-state" id="waiting-msg">
           <div class="waiting-pulse">
             <img src="isologo.png" alt="" class="waiting-isologo">
           </div>
-          <div class="waiting-state-title">Esperando al presentador</div>
-          <div class="waiting-state-sub">El audio traducido aparecerá aquí en cuanto empiece</div>
+          <div class="waiting-state-title" data-i18n="attendee_waiting_title">Esperando al presentador</div>
+          <div class="waiting-state-sub" data-i18n="attendee_waiting_sub">El audio traducido aparecerá aquí en cuanto empiece</div>
         </div>
       </div>
     </div>
     <div class="attendee-footer">
-      <button class="footer-btn primary" id="audio-toggle" onclick="toggleAudio()">Audio activado</button>
-      <button class="footer-btn" onclick="goLanding()">Salir</button>
+      <button class="footer-btn primary" id="audio-toggle" onclick="toggleAudio()" data-i18n="attendee_audio_on">Audio activado</button>
+      <button class="footer-btn" onclick="goLanding()" data-i18n="attendee_exit">Salir</button>
     </div>
   </div>
 </div>
@@ -972,6 +1068,275 @@ const LANGS = {
   ca: { name: 'Català',    bcp: 'ca-ES' },
   es: { name: 'Español',   bcp: 'es-ES' },
 };
+
+// ═══════════════════════════════════════════════════════
+// i18n translations
+// ═══════════════════════════════════════════════════════
+const I18N = {
+  es: {
+    landing_eyebrow: 'LOSAN — Nueva temporada',
+    landing_title: 'Una voz.<br><em>Todas las lenguas.</em>',
+    landing_sub: 'Hoy presentamos lo que viene. Y queremos que cada palabra te llegue exactamente como la pensamos — sin importar el idioma en el que la escuches. La moda no entiende de fronteras. Nuestra voz, tampoco.',
+    role_presenter_title: 'Presentador',
+    role_presenter_desc: 'Hablar al público y generar QR de acceso',
+    role_attendee_title: 'Asistente',
+    role_attendee_desc: 'Escuchar la traducción en mi idioma',
+    unlock_eyebrow: 'Casi listo',
+    unlock_title: 'Toca para <em>empezar a escuchar</em>',
+    unlock_sub: 'Activa el audio y mantén la pantalla encendida durante la presentación. Si bloqueas el móvil, la traducción se pausará.',
+    unlock_btn: 'Activar audio',
+    unlock_hint: 'Si estás en iPhone, asegúrate de que el interruptor lateral de silencio NO está activado (no se ve naranja).',
+    unlock_hint_android: 'Si estás en Android, asegúrate de que el volumen multimedia no esté silenciado.',
+    attendee_live: 'En directo',
+    attendee_session: 'Sesión',
+    attendee_listening_in: 'Escuchando en',
+    attendee_change: 'Cambiar',
+    attendee_waiting_title: 'Esperando al presentador',
+    attendee_waiting_sub: 'El audio traducido aparecerá aquí en cuanto empiece',
+    attendee_now_playing: 'Reproduciendo traducción...',
+    attendee_audio_on: 'Audio activado',
+    attendee_audio_off: 'Audio silenciado',
+    attendee_exit: 'Salir',
+    attendee_keep_screen: 'No bloquees ni apagues el móvil — perderías la conexión.',
+    presenter_qr_eyebrow: 'Acceso para asistentes',
+    presenter_qr_instruction: 'Escanea con la cámara<br>de tu móvil',
+  },
+  en: {
+    landing_eyebrow: 'LOSAN — New season',
+    landing_title: 'One voice.<br><em>Every language.</em>',
+    landing_sub: 'Today we present what comes next. And we want every word to reach you exactly as we intended — no matter the language you hear it in. Fashion knows no borders. Neither does our voice.',
+    role_presenter_title: 'Presenter',
+    role_presenter_desc: 'Speak to the audience and generate access QR',
+    role_attendee_title: 'Attendee',
+    role_attendee_desc: 'Listen to the translation in my language',
+    unlock_eyebrow: 'Almost ready',
+    unlock_title: 'Tap to <em>start listening</em>',
+    unlock_sub: 'Activate audio and keep your screen on during the presentation. If you lock your phone, the translation will pause.',
+    unlock_btn: 'Activate audio',
+    unlock_hint: "If you're on iPhone, make sure the side silent switch is NOT activated (no orange showing).",
+    unlock_hint_android: "If you're on Android, make sure the media volume isn't muted.",
+    attendee_live: 'Live',
+    attendee_session: 'Session',
+    attendee_listening_in: 'Listening in',
+    attendee_change: 'Change',
+    attendee_waiting_title: 'Waiting for the presenter',
+    attendee_waiting_sub: 'The translated audio will appear here as soon as it starts',
+    attendee_now_playing: 'Playing translation...',
+    attendee_audio_on: 'Audio on',
+    attendee_audio_off: 'Audio muted',
+    attendee_exit: 'Exit',
+    attendee_keep_screen: "Don't lock or turn off your phone — you'd lose the connection.",
+    presenter_qr_eyebrow: 'Attendee access',
+    presenter_qr_instruction: 'Scan with your phone<br>camera',
+  },
+  fr: {
+    landing_eyebrow: 'LOSAN — Nouvelle saison',
+    landing_title: 'Une voix.<br><em>Toutes les langues.</em>',
+    landing_sub: "Aujourd'hui, nous présentons ce qui arrive. Et nous voulons que chaque mot vous parvienne exactement comme nous l'avons pensé — quelle que soit la langue dans laquelle vous l'écoutez. La mode ne connaît pas de frontières. Notre voix non plus.",
+    role_presenter_title: 'Présentateur',
+    role_presenter_desc: "Parler au public et générer le QR d'accès",
+    role_attendee_title: 'Participant',
+    role_attendee_desc: 'Écouter la traduction dans ma langue',
+    unlock_eyebrow: 'Presque prêt',
+    unlock_title: 'Touchez pour <em>commencer à écouter</em>',
+    unlock_sub: "Activez l'audio et gardez l'écran allumé pendant la présentation. Si vous verrouillez le téléphone, la traduction sera mise en pause.",
+    unlock_btn: "Activer l'audio",
+    unlock_hint: "Sur iPhone, vérifiez que l'interrupteur silencieux latéral n'est PAS activé (pas d'orange visible).",
+    unlock_hint_android: "Sur Android, vérifiez que le volume multimédia n'est pas coupé.",
+    attendee_live: 'En direct',
+    attendee_session: 'Session',
+    attendee_listening_in: 'Écouter en',
+    attendee_change: 'Changer',
+    attendee_waiting_title: 'En attente du présentateur',
+    attendee_waiting_sub: "L'audio traduit apparaîtra ici dès le début",
+    attendee_now_playing: 'Lecture de la traduction...',
+    attendee_audio_on: 'Audio activé',
+    attendee_audio_off: 'Audio coupé',
+    attendee_exit: 'Quitter',
+    attendee_keep_screen: "Ne verrouillez pas et n'éteignez pas votre téléphone — vous perdriez la connexion.",
+    presenter_qr_eyebrow: 'Accès participants',
+    presenter_qr_instruction: 'Scannez avec la caméra<br>de votre téléphone',
+  },
+  de: {
+    landing_eyebrow: 'LOSAN — Neue Saison',
+    landing_title: 'Eine Stimme.<br><em>Alle Sprachen.</em>',
+    landing_sub: 'Heute präsentieren wir, was kommt. Und wir möchten, dass jedes Wort genau so bei dir ankommt, wie wir es gemeint haben — egal, in welcher Sprache du es hörst. Mode kennt keine Grenzen. Unsere Stimme auch nicht.',
+    role_presenter_title: 'Moderator',
+    role_presenter_desc: 'Zum Publikum sprechen und Zugangs-QR erzeugen',
+    role_attendee_title: 'Teilnehmer',
+    role_attendee_desc: 'Die Übersetzung in meiner Sprache hören',
+    unlock_eyebrow: 'Fast bereit',
+    unlock_title: 'Tippen, um <em>mit dem Hören zu beginnen</em>',
+    unlock_sub: 'Aktiviere den Ton und halte den Bildschirm während der Präsentation eingeschaltet. Wenn du das Telefon sperrst, wird die Übersetzung pausiert.',
+    unlock_btn: 'Audio aktivieren',
+    unlock_hint: 'Auf dem iPhone: Achte darauf, dass der seitliche Stummschalter NICHT aktiviert ist (kein Orange sichtbar).',
+    unlock_hint_android: 'Auf Android: Stelle sicher, dass die Medienlautstärke nicht stummgeschaltet ist.',
+    attendee_live: 'Live',
+    attendee_session: 'Sitzung',
+    attendee_listening_in: 'Hören auf',
+    attendee_change: 'Ändern',
+    attendee_waiting_title: 'Warte auf den Moderator',
+    attendee_waiting_sub: 'Das übersetzte Audio erscheint hier, sobald es beginnt',
+    attendee_now_playing: 'Übersetzung wird abgespielt...',
+    attendee_audio_on: 'Audio an',
+    attendee_audio_off: 'Audio stummgeschaltet',
+    attendee_exit: 'Verlassen',
+    attendee_keep_screen: 'Sperre oder schalte dein Telefon nicht aus — sonst geht die Verbindung verloren.',
+    presenter_qr_eyebrow: 'Zugang für Teilnehmer',
+    presenter_qr_instruction: 'Mit der Handykamera<br>scannen',
+  },
+  it: {
+    landing_eyebrow: 'LOSAN — Nuova stagione',
+    landing_title: 'Una voce.<br><em>Tutte le lingue.</em>',
+    landing_sub: "Oggi presentiamo ciò che verrà. E vogliamo che ogni parola ti arrivi esattamente come l'abbiamo pensata — non importa in che lingua la ascolti. La moda non conosce confini. Nemmeno la nostra voce.",
+    role_presenter_title: 'Presentatore',
+    role_presenter_desc: 'Parlare al pubblico e generare QR di accesso',
+    role_attendee_title: 'Partecipante',
+    role_attendee_desc: 'Ascoltare la traduzione nella mia lingua',
+    unlock_eyebrow: 'Quasi pronto',
+    unlock_title: 'Tocca per <em>iniziare ad ascoltare</em>',
+    unlock_sub: "Attiva l'audio e mantieni lo schermo acceso durante la presentazione. Se blocchi il telefono, la traduzione si metterà in pausa.",
+    unlock_btn: 'Attiva audio',
+    unlock_hint: "Su iPhone, assicurati che l'interruttore laterale del silenzioso NON sia attivato (niente arancione visibile).",
+    unlock_hint_android: "Su Android, assicurati che il volume multimediale non sia disattivato.",
+    attendee_live: 'In diretta',
+    attendee_session: 'Sessione',
+    attendee_listening_in: 'In ascolto in',
+    attendee_change: 'Cambia',
+    attendee_waiting_title: 'In attesa del presentatore',
+    attendee_waiting_sub: "L'audio tradotto apparirà qui non appena inizierà",
+    attendee_now_playing: 'Riproduzione traduzione...',
+    attendee_audio_on: 'Audio attivo',
+    attendee_audio_off: 'Audio disattivato',
+    attendee_exit: 'Esci',
+    attendee_keep_screen: 'Non bloccare né spegnere il telefono — perderesti la connessione.',
+    presenter_qr_eyebrow: 'Accesso partecipanti',
+    presenter_qr_instruction: 'Scansiona con la fotocamera<br>del telefono',
+  },
+  pt: {
+    landing_eyebrow: 'LOSAN — Nova temporada',
+    landing_title: 'Uma voz.<br><em>Todas as línguas.</em>',
+    landing_sub: 'Hoje apresentamos o que está por vir. E queremos que cada palavra te chegue exatamente como a pensámos — independentemente da língua em que a escutes. A moda não conhece fronteiras. A nossa voz também não.',
+    role_presenter_title: 'Apresentador',
+    role_presenter_desc: 'Falar ao público e gerar QR de acesso',
+    role_attendee_title: 'Participante',
+    role_attendee_desc: 'Ouvir a tradução na minha língua',
+    unlock_eyebrow: 'Quase pronto',
+    unlock_title: 'Toca para <em>começar a ouvir</em>',
+    unlock_sub: 'Ativa o áudio e mantém o ecrã ligado durante a apresentação. Se bloqueares o telemóvel, a tradução será pausada.',
+    unlock_btn: 'Ativar áudio',
+    unlock_hint: 'Se estás no iPhone, confirma que o interruptor lateral de silêncio NÃO está ativado (sem laranja visível).',
+    unlock_hint_android: 'Se estás no Android, confirma que o volume multimédia não está silenciado.',
+    attendee_live: 'Em direto',
+    attendee_session: 'Sessão',
+    attendee_listening_in: 'A ouvir em',
+    attendee_change: 'Mudar',
+    attendee_waiting_title: 'À espera do apresentador',
+    attendee_waiting_sub: 'O áudio traduzido aparecerá aqui assim que começar',
+    attendee_now_playing: 'A reproduzir tradução...',
+    attendee_audio_on: 'Áudio ativo',
+    attendee_audio_off: 'Áudio silenciado',
+    attendee_exit: 'Sair',
+    attendee_keep_screen: 'Não bloqueies nem desligues o telemóvel — perderias a ligação.',
+    presenter_qr_eyebrow: 'Acesso aos participantes',
+    presenter_qr_instruction: 'Digitaliza com a câmara<br>do telemóvel',
+  },
+  ca: {
+    landing_eyebrow: 'LOSAN — Nova temporada',
+    landing_title: 'Una veu.<br><em>Totes les llengües.</em>',
+    landing_sub: "Avui presentem el que ve. I volem que cada paraula t'arribi exactament com l'hem pensada — sigui quina sigui la llengua en què l'escoltis. La moda no entén de fronteres. La nostra veu, tampoc.",
+    role_presenter_title: 'Presentador',
+    role_presenter_desc: "Parlar al públic i generar QR d'accés",
+    role_attendee_title: 'Assistent',
+    role_attendee_desc: 'Escoltar la traducció en el meu idioma',
+    unlock_eyebrow: 'Gairebé llest',
+    unlock_title: 'Toca per <em>començar a escoltar</em>',
+    unlock_sub: "Activa l'àudio i mantén la pantalla encesa durant la presentació. Si bloqueges el mòbil, la traducció es pausarà.",
+    unlock_btn: "Activar l'àudio",
+    unlock_hint: "Si estàs amb iPhone, assegura't que l'interruptor lateral de silenci NO està activat (no es veu taronja).",
+    unlock_hint_android: "Si estàs amb Android, assegura't que el volum multimèdia no estigui silenciat.",
+    attendee_live: 'En directe',
+    attendee_session: 'Sessió',
+    attendee_listening_in: 'Escoltant en',
+    attendee_change: 'Canviar',
+    attendee_waiting_title: 'Esperant el presentador',
+    attendee_waiting_sub: "L'àudio traduït apareixerà aquí tan bon punt comenci",
+    attendee_now_playing: 'Reproduint traducció...',
+    attendee_audio_on: 'Àudio activat',
+    attendee_audio_off: 'Àudio silenciat',
+    attendee_exit: 'Sortir',
+    attendee_keep_screen: 'No bloquegis ni apaguis el mòbil — perdries la connexió.',
+    presenter_qr_eyebrow: "Accés per a assistents",
+    presenter_qr_instruction: 'Escaneja amb la càmera<br>del teu mòbil',
+  },
+};
+
+const LANDING_ROTATION = ['es','en','fr','de','it','pt','ca'];
+let landingRotationIdx = 0;
+let landingRotationTimer = null;
+
+function applyI18n(lang, scope) {
+  const dict = I18N[lang] || I18N.es;
+  const root = scope || document;
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+  root.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+}
+
+function detectInitialLang() {
+  // Use the user's browser language if we support it
+  const nav = (navigator.language || 'en').toLowerCase().split('-')[0];
+  if (I18N[nav]) return nav;
+  return 'en';
+}
+
+function getRotationScopes() {
+  const scopes = [];
+  const landing = document.getElementById('landing');
+  if (landing && landing.classList.contains('active')) scopes.push(landing);
+  const presenter = document.getElementById('presenter');
+  if (presenter && presenter.classList.contains('active')) {
+    const qr = presenter.querySelector('.qr-sidebar');
+    if (qr) scopes.push(qr);
+  }
+  const unlock = document.getElementById('audio-unlock');
+  if (unlock && unlock.classList.contains('show')) scopes.push(unlock);
+  return scopes;
+}
+
+function startLandingRotation() {
+  if (landingRotationTimer) return;
+  // Apply current immediately to whichever scopes are visible
+  const lang0 = LANDING_ROTATION[landingRotationIdx];
+  getRotationScopes().forEach(el => applyI18n(lang0, el));
+  landingRotationTimer = setInterval(() => {
+    landingRotationIdx = (landingRotationIdx + 1) % LANDING_ROTATION.length;
+    const lang = LANDING_ROTATION[landingRotationIdx];
+    const scopes = getRotationScopes();
+    if (!scopes.length) return;
+    // Fade out, swap text, fade in
+    scopes.forEach(el => el.classList.add('rotating'));
+    setTimeout(() => {
+      scopes.forEach(el => {
+        applyI18n(lang, el);
+        el.classList.remove('rotating');
+      });
+    }, 400);
+  }, 4000);
+}
+
+function stopLandingRotation() {
+  if (landingRotationTimer) {
+    clearInterval(landingRotationTimer);
+    landingRotationTimer = null;
+  }
+}
+
 
 let sessionId = generateId();
 let isRecording = false;
@@ -1030,14 +1395,42 @@ function goPresenter() {
   isPresenter = true;
   showView('presenter');
   initPresenter();
+  // Keep rotation running so QR sidebar texts cycle through languages
+  startLandingRotation();
 }
 
 function goAttendee(sid) {
   isPresenter = false;
   if (sid) sessionId = sid;
   showView('attendee');
+  // Detect browser language and apply it BEFORE showing overlay
+  const initialLang = detectInitialLang();
+  attendeeLang = initialLang;
+  applyI18n(initialLang);
+  // Mark the corresponding pill as selected
+  document.querySelectorAll('.lang-pill').forEach(p => {
+    if (p.dataset.lang === initialLang) p.classList.add('selected');
+    else p.classList.remove('selected');
+  });
+  // Update visible current label
+  const pill = document.querySelector(`.lang-pill[data-lang="${initialLang}"]`);
+  if (pill) document.getElementById('lang-current').textContent = pill.dataset.name || pill.textContent;
   // Show audio unlock overlay BEFORE initialising attendee logic
   document.getElementById('audio-unlock').classList.add('show');
+  // Keep rotation cycling the overlay through languages until user picks Activar audio
+  // (handles direct entry via QR link too)
+  startLandingRotation();
+}
+
+function goLanding() {
+  stopRecording();
+  stopMeter();
+  releaseWakeLock();
+  stopKeepScreenBreath();
+  disconnectFirebase();
+  showView('landing');
+  setConnectionState(null, 'desconectado');
+  startLandingRotation();
 }
 
 // Called when user taps the "Activar audio" button
@@ -1058,19 +1451,19 @@ function unlockAudioAndEnter() {
     }
   } catch(_) {}
 
+  // Request screen wake lock (keeps the phone screen on)
+  requestWakeLock();
+
+  // Stop rotation — user is now in the attendee proper, with their chosen language
+  stopLandingRotation();
+  // Re-apply the chosen attendee language to make sure everything is in it
+  applyI18n(attendeeLang);
+
   // Hide overlay
   document.getElementById('audio-unlock').classList.remove('show');
 
   // Now actually initialise the attendee logic
   initAttendee();
-}
-
-function goLanding() {
-  stopRecording();
-  stopMeter();
-  disconnectFirebase();
-  showView('landing');
-  setConnectionState(null, 'desconectado');
 }
 
 function showBanner(msg, type) {
@@ -1499,11 +1892,23 @@ function stopChunkTimeoutWatcher() {
 function initAttendee() {
   document.getElementById('attendee-session').textContent = sessionId;
 
+  // Start the 60-second breathing animation on the keep-screen notice
+  startKeepScreenBreath();
+
   document.querySelectorAll('.lang-pill').forEach(p => {
     p.addEventListener('click', () => {
       document.querySelectorAll('.lang-pill').forEach(x => x.classList.remove('selected'));
       p.classList.add('selected');
       attendeeLang = p.dataset.lang;
+      // Apply UI translation to the attendee view
+      applyI18n(attendeeLang);
+      // Update visible current language label
+      const currentLabel = document.getElementById('lang-current');
+      if (currentLabel) currentLabel.textContent = p.dataset.name || p.textContent;
+      // Refresh audio toggle label (depends on state)
+      refreshAudioToggleLabel();
+      // Scroll selected pill into view smoothly
+      p.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
   });
 
@@ -1522,6 +1927,61 @@ function unlockSpeech() {
     speechSynthesis.speak(u);
   } catch(_) {}
 }
+
+// ─── KEEP-SCREEN NOTICE ───────────────────────────────
+let keepScreenBreathTimer = null;
+function startKeepScreenBreath() {
+  const el = document.getElementById('keep-screen-notice');
+  if (!el) return;
+  // restart fresh
+  el.classList.add('breathing');
+  if (keepScreenBreathTimer) clearTimeout(keepScreenBreathTimer);
+  keepScreenBreathTimer = setTimeout(() => {
+    el.classList.remove('breathing');
+    keepScreenBreathTimer = null;
+  }, 60000);
+}
+
+function stopKeepScreenBreath() {
+  if (keepScreenBreathTimer) { clearTimeout(keepScreenBreathTimer); keepScreenBreathTimer = null; }
+  const el = document.getElementById('keep-screen-notice');
+  if (el) el.classList.remove('breathing');
+}
+
+// ─── WAKE LOCK (keep screen on while listening) ───────
+let wakeLock = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) {
+    console.log('Wake Lock not supported on this device');
+    return false;
+  }
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    console.log('Wake Lock activated');
+    wakeLock.addEventListener('release', () => { console.log('Wake Lock released'); });
+    return true;
+  } catch (err) {
+    console.warn('Wake Lock failed:', err.name, err.message);
+    return false;
+  }
+}
+
+async function releaseWakeLock() {
+  if (wakeLock) {
+    try { await wakeLock.release(); } catch(_) {}
+    wakeLock = null;
+  }
+}
+
+// Re-request the wake lock when the user comes back to the tab
+// (browsers release it automatically when tab loses focus)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' &&
+      document.getElementById('attendee')?.classList.contains('active') &&
+      !wakeLock) {
+    requestWakeLock();
+  }
+});
 
 async function handleIncomingText(originalText) {
   document.getElementById('waiting-msg')?.remove();
@@ -1636,6 +2096,13 @@ function speakNext() {
   }
 }
 
+function refreshAudioToggleLabel() {
+  const btn = document.getElementById('audio-toggle');
+  if (!btn) return;
+  const dict = I18N[attendeeLang] || I18N.es;
+  btn.textContent = audioEnabled ? dict.attendee_audio_on : dict.attendee_audio_off;
+}
+
 function toggleAudio() {
   audioEnabled = !audioEnabled;
   const btn = document.getElementById('audio-toggle');
@@ -1644,14 +2111,13 @@ function toggleAudio() {
     pendingQueue = [];
     isSpeaking = false;
     document.getElementById('now-playing').classList.remove('playing');
-    btn.textContent = 'Audio silenciado';
     btn.classList.remove('primary');
     btn.classList.add('muted');
   } else {
-    btn.textContent = 'Audio activado';
     btn.classList.add('primary');
     btn.classList.remove('muted');
   }
+  refreshAudioToggleLabel();
 }
 
 function generateId() {
@@ -1666,6 +2132,13 @@ window.addEventListener('DOMContentLoaded', () => {
   if (joinId) {
     sessionId = joinId;
     goAttendee(joinId);
+  } else {
+    // Apply user's browser language to landing as a starting point,
+    // then begin the auto rotation
+    const initial = detectInitialLang();
+    landingRotationIdx = LANDING_ROTATION.indexOf(initial);
+    if (landingRotationIdx < 0) landingRotationIdx = 0;
+    startLandingRotation();
   }
 });
 
