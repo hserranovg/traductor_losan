@@ -138,6 +138,7 @@
     font-weight: 400;
     line-height: 1.05;
     letter-spacing: -0.02em;
+    min-height: 2.2em;
   }
   .landing-title em {
     font-family: 'DM Sans', sans-serif;
@@ -149,6 +150,7 @@
     line-height: 1.7;
     color: var(--muted);
     max-width: 460px;
+    min-height: 6.8em;
   }
   .role-cards {
     display:flex;
@@ -452,6 +454,7 @@
     line-height: 1.6;
     font-family: 'DM Sans', sans-serif;
     font-style: italic;
+    min-height: 3.2em;
   }
   .session-info {
     border-top: 1px solid var(--line-dark);
@@ -753,7 +756,7 @@
   .audio-unlock {
     position: fixed;
     inset: 0;
-    background: rgba(255,255,255,0.98);
+    background: var(--bg);
     z-index: 9999;
     display: none;
     flex-direction: column;
@@ -775,6 +778,12 @@
     font-weight: 400;
     line-height: 1.1;
     max-width: 480px;
+    /* reserve space for up to 2 lines so the isologo above doesn't move
+       when switching between short (English) and long (German) titles */
+    min-height: 2.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .audio-unlock-title em {
     font-family: 'DM Sans', sans-serif;
@@ -788,6 +797,11 @@
     font-style: italic;
     max-width: 360px;
     line-height: 1.6;
+    /* reserve space for up to 3 lines */
+    min-height: 4.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .audio-unlock-btn {
     background: var(--text);
@@ -828,6 +842,10 @@
     line-height: 1.5;
     font-weight: 500;
     text-align: left;
+    /* reserve space for up to 2 lines so warnings don't push layout */
+    min-height: 3em;
+    display: flex;
+    align-items: center;
     animation: liveBreath 2.4s ease-in-out infinite;
   }
   .unlock-warning::before {
