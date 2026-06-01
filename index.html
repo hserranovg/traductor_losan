@@ -752,32 +752,34 @@
   .info-banner.error { background: #ffebee; border-color: #ffaaaa; color: #8b0000; }
   .info-banner.success { background: #e8f5e9; border-color: #a5d6a7; color: #1b5e20; }
 
-  /* AUDIO UNLOCK OVERLAY (iOS) */
+  /* AUDIO UNLOCK OVERLAY */
   .audio-unlock {
     position: fixed;
     inset: 0;
     background: var(--bg);
     z-index: 9999;
     display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding: 2rem;
+    overflow-y: auto;
     text-align: center;
   }
-  .audio-unlock.show { display: flex; }
+  .audio-unlock.show { display: block; }
 
-  /* FIXED TOP: isologo always here, never moves */
+  /* ISOLOGO BLOCK: position:fixed means it is nailed to the screen.
+     No matter how tall the body text is, this NEVER moves. */
   .audio-unlock-top {
-    flex-shrink: 0;
-    height: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 210px;
+    background: var(--bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 1.25rem;
-    gap: 0.85rem;
+    padding-bottom: 1.5rem;
+    gap: 0.75rem;
+    z-index: 2;
   }
   .audio-unlock-isologo {
     width: 72px;
@@ -791,16 +793,18 @@
     color: var(--muted);
   }
 
-  /* FREE BODY: text flows naturally, no min-height constraints */
+  /* BODY: flows freely below the fixed top, can be as tall as needed */
   .audio-unlock-body {
+    padding-top: 220px;  /* clears the fixed top section */
+    padding-bottom: 3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.75rem;
-    text-align: center;
     max-width: 480px;
-    width: 100%;
-    padding-bottom: 2rem;
+    margin: 0 auto;
   }
   .audio-unlock-title {
     font-size: clamp(1.8rem, 6vw, 2.6rem);
