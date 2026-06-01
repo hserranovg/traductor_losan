@@ -123,9 +123,9 @@
   #audio-unlock.rotating .unlock-warning {
     opacity: 0;
   }
-  #audio-unlock.rotating .unlock-warning {
-    animation: none;
-  }
+  #audio-unlock.rotating .unlock-warning { animation: none; }
+  /* isologo never fades during rotation — it anchors the layout */
+  #audio-unlock .audio-unlock-top { opacity: 1 !important; }
   .eyebrow {
     font-size: 0.7rem;
     font-weight: 500;
@@ -767,23 +767,46 @@
     text-align: center;
   }
   .audio-unlock.show { display: flex; }
+
+  /* FIXED TOP: isologo always here, never moves */
+  .audio-unlock-top {
+    flex-shrink: 0;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 1.25rem;
+    gap: 0.85rem;
+  }
+  .audio-unlock-isologo {
+    width: 72px;
+    height: 72px;
+    animation: liveBreath 2.4s ease-in-out infinite;
+  }
   .audio-unlock-eyebrow {
     font-size: 0.7rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--muted);
   }
+
+  /* FREE BODY: text flows naturally, no min-height constraints */
+  .audio-unlock-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    text-align: center;
+    max-width: 480px;
+    width: 100%;
+    padding-bottom: 2rem;
+  }
   .audio-unlock-title {
     font-size: clamp(1.8rem, 6vw, 2.6rem);
     font-weight: 400;
     line-height: 1.1;
     max-width: 480px;
-    /* reserve space for up to 2 lines so the isologo above doesn't move
-       when switching between short (English) and long (German) titles */
-    min-height: 2.3em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .audio-unlock-title em {
     font-family: 'DM Sans', sans-serif;
@@ -797,11 +820,6 @@
     font-style: italic;
     max-width: 360px;
     line-height: 1.6;
-    /* reserve space for up to 3 lines */
-    min-height: 4.8em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .audio-unlock-btn {
     background: var(--text);
@@ -814,20 +832,40 @@
     letter-spacing: 0.05em;
     cursor: pointer;
     border-radius: 0;
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     gap: 0.75rem;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.3s;
   }
   .audio-unlock-btn:hover { transform: scale(1.02); }
   .audio-unlock-btn:active { transform: scale(0.98); }
+  .audio-unlock-btn.presenter-live {
+    animation: btnPulse 1s ease-in-out infinite;
+    box-shadow: 0 0 0 4px rgba(10,10,10,0.15);
+  }
+  @keyframes btnPulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(10,10,10,0.15); }
+    50% { transform: scale(1.04); box-shadow: 0 0 0 10px rgba(10,10,10,0); }
+  }
   .audio-unlock-btn svg {
     width: 20px;
     height: 20px;
     fill: currentColor;
   }
+  .audio-unlock-live-banner {
+    display: none;
+    padding: 0.6rem 1.25rem;
+    background: rgba(200,16,46,0.07);
+    border: 1px solid rgba(200,16,46,0.25);
+    color: var(--danger);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    animation: liveBreath 1.6s ease-in-out infinite;
+  }
+  .audio-unlock-live-banner.show { display: block; }
   .audio-unlock-warnings {
-    margin-top: 1.25rem;
     max-width: 460px;
     width: 100%;
     display: flex;
@@ -838,14 +876,10 @@
     position: relative;
     padding-left: 1.1rem;
     color: var(--danger);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     line-height: 1.5;
     font-weight: 500;
     text-align: left;
-    /* reserve space for up to 2 lines so warnings don't push layout */
-    min-height: 3em;
-    display: flex;
-    align-items: center;
     animation: liveBreath 2.4s ease-in-out infinite;
   }
   .unlock-warning::before {
@@ -860,12 +894,7 @@
     box-shadow: 0 0 0 3px rgba(200,16,46,0.18);
     animation: keepDot 1.6s ease-in-out infinite;
   }
-  .audio-unlock-isologo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1rem;
-    animation: liveBreath 2.4s ease-in-out infinite;
-  }
+  #audio-unlock.rotating .unlock-warning { animation: none; }
 
   @media (max-width: 900px) {
     #landing { padding: 3rem 1.5rem; }
@@ -894,20 +923,30 @@
   <span class="brand-tagline">live translation</span>
 </header>
 
-<!-- AUDIO UNLOCK OVERLAY (for attendees, mostly iOS) -->
+<!-- AUDIO UNLOCK OVERLAY (for attendees) -->
 <div class="audio-unlock" id="audio-unlock">
-  <img src="isologo.png" alt="" class="audio-unlock-isologo">
-  <div class="audio-unlock-eyebrow" data-i18n="unlock_eyebrow">Casi listo</div>
-  <h2 class="audio-unlock-title" data-i18n-html="unlock_title">Toca para <em>empezar a escuchar</em></h2>
-  <p class="audio-unlock-sub" data-i18n="unlock_sub">Activa el audio y mantén la pantalla encendida durante la presentación. Si bloqueas el móvil, la traducción se pausará.</p>
-  <button class="audio-unlock-btn" id="audio-unlock-btn" onclick="unlockAudioAndEnter()">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    <span data-i18n="unlock_btn">Activar audio</span>
-  </button>
-  <div class="audio-unlock-warnings">
-    <p class="unlock-warning" data-i18n="unlock_hint">Si estás en iPhone, asegúrate de que el interruptor lateral de silencio NO está activado (no se ve naranja).</p>
-    <p class="unlock-warning" data-i18n="unlock_hint_android">Si estás en Android, asegúrate de que el volumen multimedia no esté silenciado.</p>
+
+  <!-- FIXED TOP: isologo always anchored here -->
+  <div class="audio-unlock-top">
+    <img src="isologo.png" alt="" class="audio-unlock-isologo">
+    <div class="audio-unlock-eyebrow" data-i18n="unlock_eyebrow">Casi listo</div>
   </div>
+
+  <!-- FREE BODY: text flows naturally, no height constraints -->
+  <div class="audio-unlock-body">
+    <div class="audio-unlock-live-banner" id="unlock-live-banner">&#x25B6; El presentador ha comenzado</div>
+    <h2 class="audio-unlock-title" data-i18n-html="unlock_title">Toca para <em>empezar a escuchar</em></h2>
+    <p class="audio-unlock-sub" data-i18n="unlock_sub">Activa el audio y mantén la pantalla encendida durante la presentación. Si bloqueas el móvil, la traducción se pausará.</p>
+    <button class="audio-unlock-btn" id="audio-unlock-btn" onclick="unlockAudioAndEnter()">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <span data-i18n="unlock_btn">Activar audio</span>
+    </button>
+    <div class="audio-unlock-warnings">
+      <p class="unlock-warning" data-i18n="unlock_hint">Si estás en iPhone, aseg&#250;rate de que el interruptor lateral de silencio NO est&#225; activado (no se ve naranja).</p>
+      <p class="unlock-warning" data-i18n="unlock_hint_android">Si est&#225;s en Android, aseg&#250;rate de que el volumen multimedia no est&#233; silenciado.</p>
+    </div>
+  </div>
+
 </div>
 
 <div id="landing" class="view active">
@@ -1116,6 +1155,7 @@ const I18N = {
     attendee_audio_on: 'Audio activado',
     attendee_audio_off: 'Audio silenciado',
     attendee_exit: 'Salir',
+    presenter_live_alert: 'El presentador ha comenzado',
     attendee_keep_screen: 'No bloquees ni apagues el móvil — perderías la conexión.',
     presenter_qr_eyebrow: 'Acceso para asistentes',
     presenter_qr_instruction: 'Escanea con la cámara<br>de tu móvil',
@@ -1144,6 +1184,7 @@ const I18N = {
     attendee_audio_on: 'Audio on',
     attendee_audio_off: 'Audio muted',
     attendee_exit: 'Exit',
+    presenter_live_alert: 'The presenter has started',
     attendee_keep_screen: "Don't lock or turn off your phone — you'd lose the connection.",
     presenter_qr_eyebrow: 'Attendee access',
     presenter_qr_instruction: 'Scan with your phone<br>camera',
@@ -1172,6 +1213,7 @@ const I18N = {
     attendee_audio_on: 'Audio activé',
     attendee_audio_off: 'Audio coupé',
     attendee_exit: 'Quitter',
+    presenter_live_alert: 'Le présentateur a commencé',
     attendee_keep_screen: "Ne verrouillez pas et n'éteignez pas votre téléphone — vous perdriez la connexion.",
     presenter_qr_eyebrow: 'Accès participants',
     presenter_qr_instruction: 'Scannez avec la caméra<br>de votre téléphone',
@@ -1200,6 +1242,7 @@ const I18N = {
     attendee_audio_on: 'Audio an',
     attendee_audio_off: 'Audio stummgeschaltet',
     attendee_exit: 'Verlassen',
+    presenter_live_alert: 'Der Moderator hat begonnen',
     attendee_keep_screen: 'Sperre oder schalte dein Telefon nicht aus — sonst geht die Verbindung verloren.',
     presenter_qr_eyebrow: 'Zugang für Teilnehmer',
     presenter_qr_instruction: 'Mit der Handykamera<br>scannen',
@@ -1228,6 +1271,7 @@ const I18N = {
     attendee_audio_on: 'Audio attivo',
     attendee_audio_off: 'Audio disattivato',
     attendee_exit: 'Esci',
+    presenter_live_alert: 'Il presentatore ha iniziato',
     attendee_keep_screen: 'Non bloccare né spegnere il telefono — perderesti la connessione.',
     presenter_qr_eyebrow: 'Accesso partecipanti',
     presenter_qr_instruction: 'Scansiona con la fotocamera<br>del telefono',
@@ -1256,6 +1300,7 @@ const I18N = {
     attendee_audio_on: 'Áudio ativo',
     attendee_audio_off: 'Áudio silenciado',
     attendee_exit: 'Sair',
+    presenter_live_alert: 'O apresentador começou',
     attendee_keep_screen: 'Não bloqueies nem desligues o telemóvel — perderias a ligação.',
     presenter_qr_eyebrow: 'Acesso aos participantes',
     presenter_qr_instruction: 'Digitaliza com a câmara<br>do telemóvel',
@@ -1284,6 +1329,7 @@ const I18N = {
     attendee_audio_on: 'Àudio activat',
     attendee_audio_off: 'Àudio silenciat',
     attendee_exit: 'Sortir',
+    presenter_live_alert: 'El presentador ha começat',
     attendee_keep_screen: 'No bloquegis ni apaguis el mòbil — perdries la connexió.',
     presenter_qr_eyebrow: "Accés per a assistents",
     presenter_qr_instruction: 'Escaneja amb la càmera<br>del teu mòbil',
@@ -1687,6 +1733,8 @@ async function startRecording() {
     document.getElementById('state-display').textContent = 'Retransmitiendo';
     document.getElementById('empty-msg')?.remove();
     showBanner('✓ Micrófono activo. Lo que digas se enviará a los asistentes.', 'success');
+    // Signal attendees that the presenter is live
+    sendFirebaseMessage({ type: 'presenter_status', status: 'live' });
   };
 
   recognition.onresult = (e) => {
@@ -1935,16 +1983,43 @@ function initAttendee() {
     if (data.type === 'transcript' && data.text) {
       handleIncomingText(data.text);
     }
+    if (data.type === 'presenter_status' && data.status === 'live') {
+      handlePresenterLive();
+    }
   });
 }
 
-function unlockSpeech() {
-  // Kept for compatibility — main unlock happens via unlockAudioAndEnter()
+function handlePresenterLive() {
+  const overlay = document.getElementById('audio-unlock');
+
+  // If overlay is NOT showing, audio is already unlocked — nothing to do
+  if (!overlay || !overlay.classList.contains('show')) return;
+
+  // Show the "presenter has started" banner on the overlay
+  const banner = document.getElementById('unlock-live-banner');
+  const dict = I18N[attendeeLang] || I18N.es;
+  if (banner) {
+    banner.textContent = '▶ ' + (dict.presenter_live_alert || 'El presentador ha comenzado');
+    banner.classList.add('show');
+  }
+
+  // Pulse the button to draw attention
+  document.getElementById('audio-unlock-btn')?.classList.add('presenter-live');
+
+  // Try auto-unlock (works on Android Chrome, fails silently on iOS)
   try {
-    const u = new SpeechSynthesisUtterance('');
-    u.volume = 0;
-    speechSynthesis.speak(u);
-  } catch(_) {}
+    const testCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (testCtx.state === 'running') {
+      // Autoplay is allowed on this device
+      testCtx.close();
+      unlockAudioAndEnter();
+    } else {
+      testCtx.close();
+      // iOS: can't auto-unlock, button is already pulsing to prompt the user
+    }
+  } catch(e) {
+    // fallback: leave the overlay visible, button will pulse
+  }
 }
 
 // ─── KEEP-SCREEN NOTICE ───────────────────────────────
