@@ -224,6 +224,40 @@
   }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
+  .mic-device-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .mic-device-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .mic-device-select {
+    flex: 1;
+    min-width: 180px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line-dark);
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .mic-device-select:focus { border-color: var(--text); }
+  .mic-device-hint {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-style: italic;
+    white-space: nowrap;
+  }
   .mic-section {
     padding: 2rem 0 3rem;
     display:flex;
@@ -301,8 +335,40 @@
     border-color: var(--text);
   }
   .mic-icon { width: 36px; height: 36px; stroke: currentColor; stroke-width: 1.5; fill: none; }
-  .mic-status {
-    font-size: 0.95rem;
+  .mic-device-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .mic-device-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mic-device-select {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line-dark);
+    padding: 0.7rem 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .mic-device-select:focus { border-color: var(--text); }
+  .mic-device-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .mic-device-hint.warn { color: var(--danger); }
+  .mic-status {  font-size: 0.95rem;
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
     font-style: italic;
@@ -988,6 +1054,13 @@
         </div>
       </div>
       <div class="mic-section">
+        <div class="mic-device-row">
+          <label class="mic-device-label" for="mic-device-select">Micrófono</label>
+          <select class="mic-device-select" id="mic-device-select" onchange="onMicDeviceChange()">
+            <option value="">Cargando dispositivos...</option>
+          </select>
+          <span class="mic-device-hint" id="mic-device-hint"></span>
+        </div>
         <div class="mic-row">
           <div class="mic-btn-wrap" id="mic-btn-wrap">
             <div class="mic-level-ring" id="mic-level-ring"></div>
@@ -1431,6 +1504,56 @@ let audioContext = null;
 let analyser = null;
 let micStream = null;
 let meterRAF = null;
+let selectedMicId = '';
+
+// ─── MICROPHONE SELECTOR ──────────────────────────────
+async function enumerateMics() {
+  const select = document.getElementById('mic-device-select');
+  const hint = document.getElementById('mic-device-hint');
+  if (!select) return;
+  try {
+    // Need permission first to see device labels
+    const tmp = await navigator.mediaDevices.getUserMedia({ audio: true });
+    tmp.getTracks().forEach(t => t.stop());
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const mics = devices.filter(d => d.kind === 'audioinput');
+
+    select.innerHTML = '';
+    const def = document.createElement('option');
+    def.value = '';
+    def.textContent = 'Predeterminado del navegador';
+    select.appendChild(def);
+
+    mics.forEach((m, i) => {
+      const opt = document.createElement('option');
+      opt.value = m.deviceId;
+      opt.textContent = m.label || `Micrófono ${i + 1}`;
+      select.appendChild(opt);
+    });
+
+    if (hint) {
+      hint.innerHTML = `${mics.length} dispositivo${mics.length !== 1 ? 's' : ''} detectado${mics.length !== 1 ? 's' : ''}. ` +
+        `Este selector mueve el medidor de nivel para que confirmes la señal. ` +
+        `El reconocimiento de voz usa el micrófono <b>predeterminado de Chrome</b>: ` +
+        `si el Bluetooth no funciona, ponlo como predeterminado en el icono 🎤 de la barra de direcciones y recarga.`;
+    }
+  } catch (e) {
+    console.warn('enumerateMics failed:', e);
+    select.innerHTML = '<option value="">Permiso de micrófono necesario</option>';
+    if (hint) hint.textContent = '';
+  }
+}
+
+async function onMicDeviceChange() {
+  selectedMicId = document.getElementById('mic-device-select').value;
+  // If the meter is running, restart it on the new device so the level
+  // bars reflect the chosen mic immediately
+  if (micStream) {
+    stopMeter();
+    try { await startMeter(); } catch(e) { console.warn(e); }
+  }
+}
 
 let messagesRef = null;
 let messagesListener = null;
@@ -1626,6 +1749,7 @@ function disconnectFirebase() {
 // ═══════════════════════════════════════════════════════
 function initPresenter() {
   document.getElementById('session-display').textContent = sessionId;
+  enumerateMics();
   const attendeeURL = buildAttendeeURL();
   document.getElementById('attendee-url-display').textContent = attendeeURL;
   document.getElementById('qr-code').innerHTML = '';
@@ -1641,6 +1765,11 @@ function initPresenter() {
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     showBanner('⚠ Estás en HTTP. El navegador bloqueará el micrófono. La página debe servirse por HTTPS.', 'error');
   }
+
+  // Populate the microphone selector
+  enumerateMics();
+  // Refresh list if devices change (e.g. Bluetooth receiver connects)
+  navigator.mediaDevices.addEventListener?.('devicechange', enumerateMics);
 
   connectFirebase((data) => {
     // Presenter doesn't need to react to incoming messages (it's the sender)
@@ -1726,7 +1855,6 @@ async function startRecording() {
     lastSentText = '';
     lastChunkSentAt = Date.now();
     isMuted = false;
-    startChunkTimeoutWatcher();
     document.getElementById('mute-btn').classList.add('enabled');
     document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
@@ -1750,22 +1878,19 @@ async function startRecording() {
       else interim += t;
     }
 
+    // Show interim ONLY on the presenter's screen for visual feedback.
+    // We NEVER send interim — it's unstable (constantly revised by the engine)
+    // and was the source of the duplication problem.
+    document.getElementById('interim-text').textContent = interim;
+
     if (final) {
       const finalTrimmed = final.trim();
-      // Update display
       document.getElementById('final-text').textContent += finalTrimmed + ' ';
       document.getElementById('interim-text').textContent = '';
-      // Only send the part that was NOT already sent via interim chunks
-      const unsent = extractNewPart(finalTrimmed, lastInterimSent);
-      if (unsent && unsent.trim().split(/\s+/).length >= 2) {
-        broadcastText(unsent.trim());
+      // Final results don't overlap and aren't revised → send directly, no dupes
+      if (finalTrimmed.split(/\s+/).length >= 1) {
+        broadcastText(finalTrimmed);
       }
-      // Reset for next utterance
-      lastInterimSent = '';
-      lastSentText = '';
-    } else if (interim) {
-      document.getElementById('interim-text').textContent = interim;
-      checkInterimChunking(interim);
     }
   };
 
@@ -1817,9 +1942,10 @@ function stopRecording() {
 }
 
 async function startMeter() {
-  micStream = await navigator.mediaDevices.getUserMedia({
-    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-  });
+  const audioConstraints = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+  // Use the device chosen in the selector, if any
+  if (selectedMicId) audioConstraints.deviceId = { exact: selectedMicId };
+  micStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const source = audioContext.createMediaStreamSource(micStream);
   analyser = audioContext.createAnalyser();
