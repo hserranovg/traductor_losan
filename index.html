@@ -338,10 +338,16 @@
   .mic-device-row {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--line);
+    max-width: 340px;
+  }
+  .mic-device-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .mic-device-label {
     font-size: 0.65rem;
@@ -349,25 +355,50 @@
     text-transform: uppercase;
     color: var(--muted);
   }
+  .mic-info-btn {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--line-dark);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 0.65rem;
+    font-style: italic;
+    font-family: Georgia, serif;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .mic-info-btn:hover { color: var(--text); border-color: var(--text); }
   .mic-device-select {
     width: 100%;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text);
     background: var(--bg);
     border: 1px solid var(--line-dark);
-    padding: 0.7rem 0.85rem;
+    padding: 0.55rem 0.7rem;
     outline: none;
     cursor: pointer;
     transition: border-color 0.2s;
   }
   .mic-device-select:focus { border-color: var(--text); }
   .mic-device-hint {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--muted);
-    line-height: 1.5;
   }
-  .mic-device-hint.warn { color: var(--danger); }
+  .mic-info-box {
+    display: none;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.55;
+    padding: 0.7rem 0.85rem;
+    background: var(--surface);
+    border-left: 2px solid var(--line-dark);
+  }
+  .mic-info-box.show { display: block; }
   .mic-status {  font-size: 0.95rem;
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
@@ -1055,11 +1086,17 @@
       </div>
       <div class="mic-section">
         <div class="mic-device-row">
-          <label class="mic-device-label" for="mic-device-select">Micrófono</label>
+          <div class="mic-device-top">
+            <label class="mic-device-label" for="mic-device-select">Micrófono</label>
+            <button class="mic-info-btn" id="mic-info-btn" onclick="toggleMicInfo()" title="Información">i</button>
+          </div>
           <select class="mic-device-select" id="mic-device-select" onchange="onMicDeviceChange()">
             <option value="">Cargando dispositivos...</option>
           </select>
           <span class="mic-device-hint" id="mic-device-hint"></span>
+          <div class="mic-info-box" id="mic-info-box">
+            El selector mueve el medidor de nivel para confirmar la señal. El reconocimiento de voz usa el micrófono <b>predeterminado de Chrome</b>: si el Bluetooth no funciona, ponlo como predeterminado en el icono 🎤 de la barra de direcciones y recarga.
+          </div>
         </div>
         <div class="mic-row">
           <div class="mic-btn-wrap" id="mic-btn-wrap">
@@ -1532,12 +1569,7 @@ async function enumerateMics() {
       select.appendChild(opt);
     });
 
-    if (hint) {
-      hint.innerHTML = `${mics.length} dispositivo${mics.length !== 1 ? 's' : ''} detectado${mics.length !== 1 ? 's' : ''}. ` +
-        `Este selector mueve el medidor de nivel para que confirmes la señal. ` +
-        `El reconocimiento de voz usa el micrófono <b>predeterminado de Chrome</b>: ` +
-        `si el Bluetooth no funciona, ponlo como predeterminado en el icono 🎤 de la barra de direcciones y recarga.`;
-    }
+    if (hint) hint.textContent = `${mics.length} dispositivo${mics.length !== 1 ? 's' : ''} detectado${mics.length !== 1 ? 's' : ''}`;
   } catch (e) {
     console.warn('enumerateMics failed:', e);
     select.innerHTML = '<option value="">Permiso de micrófono necesario</option>';
@@ -1553,6 +1585,10 @@ async function onMicDeviceChange() {
     stopMeter();
     try { await startMeter(); } catch(e) { console.warn(e); }
   }
+}
+
+function toggleMicInfo() {
+  document.getElementById('mic-info-box')?.classList.toggle('show');
 }
 
 let messagesRef = null;
