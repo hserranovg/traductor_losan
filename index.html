@@ -224,40 +224,6 @@
   }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
-  .mic-device-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .mic-device-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-  .mic-device-select {
-    flex: 1;
-    min-width: 180px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--line-dark);
-    padding: 0.5rem 0.75rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .mic-device-select:focus { border-color: var(--text); }
-  .mic-device-hint {
-    font-size: 0.7rem;
-    color: var(--muted);
-    font-style: italic;
-    white-space: nowrap;
-  }
   .mic-section {
     padding: 2rem 0 3rem;
     display:flex;
@@ -335,71 +301,8 @@
     border-color: var(--text);
   }
   .mic-icon { width: 36px; height: 36px; stroke: currentColor; stroke-width: 1.5; fill: none; }
-  .mic-device-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--line);
-    max-width: 340px;
-  }
-  .mic-device-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .mic-device-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .mic-info-btn {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 1px solid var(--line-dark);
-    background: var(--bg);
-    color: var(--muted);
-    font-size: 0.65rem;
-    font-style: italic;
-    font-family: Georgia, serif;
-    cursor: pointer;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-  .mic-info-btn:hover { color: var(--text); border-color: var(--text); }
-  .mic-device-select {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--line-dark);
-    padding: 0.55rem 0.7rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .mic-device-select:focus { border-color: var(--text); }
-  .mic-device-hint {
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-  .mic-info-box {
-    display: none;
-    font-size: 0.72rem;
-    color: var(--muted);
-    line-height: 1.55;
-    padding: 0.7rem 0.85rem;
-    background: var(--surface);
-    border-left: 2px solid var(--line-dark);
-  }
-  .mic-info-box.show { display: block; }
-  .mic-status {  font-size: 0.95rem;
+  .mic-status {
+    font-size: 0.95rem;
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
     font-style: italic;
@@ -1085,19 +988,6 @@
         </div>
       </div>
       <div class="mic-section">
-        <div class="mic-device-row">
-          <div class="mic-device-top">
-            <label class="mic-device-label" for="mic-device-select">Micrófono</label>
-            <button class="mic-info-btn" id="mic-info-btn" onclick="toggleMicInfo()" title="Información">i</button>
-          </div>
-          <select class="mic-device-select" id="mic-device-select" onchange="onMicDeviceChange()">
-            <option value="">Cargando dispositivos...</option>
-          </select>
-          <span class="mic-device-hint" id="mic-device-hint"></span>
-          <div class="mic-info-box" id="mic-info-box">
-            El selector mueve el medidor de nivel para confirmar la señal. El reconocimiento de voz usa el micrófono <b>predeterminado de Chrome</b>: si el Bluetooth no funciona, ponlo como predeterminado en el icono 🎤 de la barra de direcciones y recarga.
-          </div>
-        </div>
         <div class="mic-row">
           <div class="mic-btn-wrap" id="mic-btn-wrap">
             <div class="mic-level-ring" id="mic-level-ring"></div>
@@ -1541,55 +1431,6 @@ let audioContext = null;
 let analyser = null;
 let micStream = null;
 let meterRAF = null;
-let selectedMicId = '';
-
-// ─── MICROPHONE SELECTOR ──────────────────────────────
-async function enumerateMics() {
-  const select = document.getElementById('mic-device-select');
-  const hint = document.getElementById('mic-device-hint');
-  if (!select) return;
-  try {
-    // Need permission first to see device labels
-    const tmp = await navigator.mediaDevices.getUserMedia({ audio: true });
-    tmp.getTracks().forEach(t => t.stop());
-
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const mics = devices.filter(d => d.kind === 'audioinput');
-
-    select.innerHTML = '';
-    const def = document.createElement('option');
-    def.value = '';
-    def.textContent = 'Predeterminado del navegador';
-    select.appendChild(def);
-
-    mics.forEach((m, i) => {
-      const opt = document.createElement('option');
-      opt.value = m.deviceId;
-      opt.textContent = m.label || `Micrófono ${i + 1}`;
-      select.appendChild(opt);
-    });
-
-    if (hint) hint.textContent = `${mics.length} dispositivo${mics.length !== 1 ? 's' : ''} detectado${mics.length !== 1 ? 's' : ''}`;
-  } catch (e) {
-    console.warn('enumerateMics failed:', e);
-    select.innerHTML = '<option value="">Permiso de micrófono necesario</option>';
-    if (hint) hint.textContent = '';
-  }
-}
-
-async function onMicDeviceChange() {
-  selectedMicId = document.getElementById('mic-device-select').value;
-  // If the meter is running, restart it on the new device so the level
-  // bars reflect the chosen mic immediately
-  if (micStream) {
-    stopMeter();
-    try { await startMeter(); } catch(e) { console.warn(e); }
-  }
-}
-
-function toggleMicInfo() {
-  document.getElementById('mic-info-box')?.classList.toggle('show');
-}
 
 let messagesRef = null;
 let messagesListener = null;
@@ -1785,7 +1626,6 @@ function disconnectFirebase() {
 // ═══════════════════════════════════════════════════════
 function initPresenter() {
   document.getElementById('session-display').textContent = sessionId;
-  enumerateMics();
   const attendeeURL = buildAttendeeURL();
   document.getElementById('attendee-url-display').textContent = attendeeURL;
   document.getElementById('qr-code').innerHTML = '';
@@ -1801,11 +1641,6 @@ function initPresenter() {
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     showBanner('⚠ Estás en HTTP. El navegador bloqueará el micrófono. La página debe servirse por HTTPS.', 'error');
   }
-
-  // Populate the microphone selector
-  enumerateMics();
-  // Refresh list if devices change (e.g. Bluetooth receiver connects)
-  navigator.mediaDevices.addEventListener?.('devicechange', enumerateMics);
 
   connectFirebase((data) => {
     // Presenter doesn't need to react to incoming messages (it's the sender)
@@ -1891,6 +1726,7 @@ async function startRecording() {
     lastSentText = '';
     lastChunkSentAt = Date.now();
     isMuted = false;
+    startChunkTimeoutWatcher();
     document.getElementById('mute-btn').classList.add('enabled');
     document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
@@ -1913,20 +1749,23 @@ async function startRecording() {
       if (e.results[i].isFinal) final += t;
       else interim += t;
     }
-
-    // Show interim ONLY on the presenter's screen for visual feedback.
-    // We NEVER send interim — it's unstable (constantly revised by the engine)
-    // and was the source of the duplication problem.
     document.getElementById('interim-text').textContent = interim;
 
     if (final) {
-      const finalTrimmed = final.trim();
-      document.getElementById('final-text').textContent += finalTrimmed + ' ';
+      const prev = document.getElementById('final-text').textContent;
+      document.getElementById('final-text').textContent = prev + final + ' ';
       document.getElementById('interim-text').textContent = '';
-      // Final results don't overlap and aren't revised → send directly, no dupes
-      if (finalTrimmed.split(/\s+/).length >= 1) {
-        broadcastText(finalTrimmed);
+      // Send remaining unsent part of the final text
+      const finalTrimmed = final.trim();
+      if (finalTrimmed && finalTrimmed !== lastSentText) {
+        const newPart = extractNewPart(finalTrimmed, lastSentText);
+        if (newPart) broadcastText(newPart);
+        lastSentText = '';
+        lastInterimSent = '';
       }
+    } else if (interim) {
+      // Chunk by word count: send every ~15 words even while speaking
+      checkInterimChunking(interim);
     }
   };
 
@@ -1944,10 +1783,6 @@ async function startRecording() {
   };
 
   recognition.onend = () => {
-    // Clear interim display — prevents watcher from re-sending stale text
-    // when recognition restarts (onstart resets lastInterimSent but not the DOM element)
-    const interimEl = document.getElementById('interim-text');
-    if (interimEl) interimEl.textContent = '';
     if (isRecording) {
       try { recognition.start(); } catch(_) {}
     }
@@ -1978,10 +1813,9 @@ function stopRecording() {
 }
 
 async function startMeter() {
-  const audioConstraints = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
-  // Use the device chosen in the selector, if any
-  if (selectedMicId) audioConstraints.deviceId = { exact: selectedMicId };
-  micStream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
+  micStream = await navigator.mediaDevices.getUserMedia({
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+  });
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const source = audioContext.createMediaStreamSource(micStream);
   analyser = audioContext.createAnalyser();
@@ -2043,47 +1877,10 @@ function stopMeter() {
   if (ring) ring.style.transform = 'scale(1)';
 }
 
-// Dedup cache: ignore if same text sent in last 8 seconds
-const _recentlySent = new Map();
-
-async function broadcastText(text) {
+function broadcastText(text) {
   if (!text || !text.trim()) return;
-  if (isMuted) return;
-
-  const key = text.trim().toLowerCase().replace(/\s+/g, ' ');
-  const now = Date.now();
-
-  // Purge old entries
-  for (const [k, t] of _recentlySent) {
-    if (now - t > 8000) _recentlySent.delete(k);
-  }
-
-  if (_recentlySent.has(key)) {
-    console.log('[dedup] skipped:', text.substring(0, 40));
-    return;
-  }
-  _recentlySent.set(key, now);
-
-  // Translate to all active languages on the presenter side (one call per lang)
-  // This is faster for attendees: they receive pre-translated text, no API call needed
-  const translations = { es: text.trim() };
-  const langs = Array.from(activeLangs);
-
-  await Promise.all(langs.map(async (lang) => {
-    if (lang === 'es') return;
-    try {
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${lang}&dt=t&q=${encodeURIComponent(text.trim())}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (Array.isArray(data) && Array.isArray(data[0])) {
-        translations[lang] = data[0].map(c => c[0]).join('');
-      }
-    } catch(e) {
-      translations[lang] = text.trim(); // fallback: original
-    }
-  }));
-
-  sendFirebaseMessage({ type: 'transcript', original: text.trim(), translations });
+  if (isMuted) return;  // mute = don't send anything to attendees
+  sendFirebaseMessage({ type: 'transcript', text: text.trim() });
 }
 
 // Returns the portion of `current` that hasn't been sent yet
@@ -2187,14 +1984,8 @@ function initAttendee() {
   });
 
   connectFirebase((data) => {
-    if (data.type === 'transcript') {
-      // Use pre-translated text from presenter if available (faster, no API call)
-      const text = data.translations?.[attendeeLang]
-        || data.translations?.['es']
-        || data.original
-        || data.text;
-      const original = data.original || data.text || '';
-      if (text) handleIncomingText(original, text);
+    if (data.type === 'transcript' && data.text) {
+      handleIncomingText(data.text);
     }
     if (data.type === 'presenter_status' && data.status === 'live') {
       handlePresenterLive();
@@ -2290,15 +2081,13 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-async function handleIncomingText(originalText, preTranslated) {
+async function handleIncomingText(originalText) {
   document.getElementById('waiting-msg')?.remove();
 
-  // Use pre-translated text if available, otherwise translate client-side (fallback)
-  let textToSpeak = preTranslated || originalText;
-  if (!preTranslated && attendeeLang !== 'es') {
+  let textToSpeak = originalText;
+  if (attendeeLang !== 'es') {
     textToSpeak = await translateText(originalText, attendeeLang);
   }
-
   addTranslationBubble(originalText, textToSpeak);
   if (audioEnabled) {
     pendingQueue.push({ text: textToSpeak, lang: attendeeLang });
