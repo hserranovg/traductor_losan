@@ -1541,12 +1541,30 @@ let lastChunkSentAt = 0;
 let sentFinalCount = 0;   // how many final results we've already sent this session (anti-duplicate)
 let mutePaused = false;   // when true, onend must NOT auto-restart (mic is muted)
 let lastFinalAt = 0;
+let _flushWatcher = null;
 
-// NO forced flush watcher. Chrome with continuous=true produces finals every
-// ~3-6 seconds naturally during speech. Forcing stop/restart creates a gap
-// where words get lost. The ONLY forced stop is on MUTE (intentional by the
-// presenter). For a conference, 3-6s latency is normal — professional human
-// interpreters work at similar delays.
+// If Chrome hasn't produced a final result in 7 seconds during active speech,
+// force a stop/restart to flush. The ~200ms restart gap may lose ~1 word but
+// ensures translated text flows to attendees every 7 seconds max.
+function startFlushWatcher() {
+  if (_flushWatcher) return;
+  _flushWatcher = setInterval(() => {
+    if (!isRecording || mutePaused || !recognition) return;
+    // Only flush if we've been waiting too long AND there's interim text
+    // (= someone is speaking). If interim is empty, no need to flush.
+    const interimEl = document.getElementById('interim-text');
+    const hasInterim = interimEl && interimEl.textContent.trim().length > 0;
+    if (hasInterim && Date.now() - lastFinalAt > 7000) {
+      lastFinalAt = Date.now();
+      try { recognition.stop(); } catch(_) {}
+      // onend will auto-restart (mutePaused is false)
+    }
+  }, 1000);
+}
+
+function stopFlushWatcher() {
+  if (_flushWatcher) { clearInterval(_flushWatcher); _flushWatcher = null; }
+}
 
 let audioContext = null;
 let analyser = null;
@@ -1911,6 +1929,7 @@ async function startRecording() {
     lastSentText = '';
     sentFinalCount = 0;   // new session → results array restarts at index 0
     lastFinalAt = Date.now();
+    startFlushWatcher();
     document.getElementById('mute-btn').classList.add('enabled');
     document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
@@ -1973,6 +1992,7 @@ function stopRecording() {
   isRecording = false;
   isMuted = false;
   mutePaused = false;
+  stopFlushWatcher();
   if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
   document.getElementById('mic-btn-wrap')?.classList.remove('recording');
