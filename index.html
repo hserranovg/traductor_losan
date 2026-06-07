@@ -1540,28 +1540,13 @@ let isMuted = false;
 let lastChunkSentAt = 0;
 let sentFinalCount = 0;   // how many final results we've already sent this session (anti-duplicate)
 let mutePaused = false;   // when true, onend must NOT auto-restart (mic is muted)
-let lastFinalAt = 0;      // timestamp of last final result (for flush watcher)
-let _flushWatcher = null;
+let lastFinalAt = 0;
 
-// If the speaker talks continuously without pausing, Chrome won't finalise
-// for many seconds. This watcher forces a stop/restart every 4s of silence
-// (= no new final results), which triggers finalization of pending interim.
-function startFinalFlushWatcher() {
-  if (_flushWatcher) return;
-  _flushWatcher = setInterval(() => {
-    if (!isRecording || mutePaused || !recognition) return;
-    const elapsed = Date.now() - lastFinalAt;
-    if (elapsed > 4000) {
-      lastFinalAt = Date.now(); // prevent rapid re-triggering
-      try { recognition.stop(); } catch(_) {}
-      // onend will auto-restart (mutePaused is false)
-    }
-  }, 1000);
-}
-
-function stopFinalFlushWatcher() {
-  if (_flushWatcher) { clearInterval(_flushWatcher); _flushWatcher = null; }
-}
+// NO forced flush watcher. Chrome with continuous=true produces finals every
+// ~3-6 seconds naturally during speech. Forcing stop/restart creates a gap
+// where words get lost. The ONLY forced stop is on MUTE (intentional by the
+// presenter). For a conference, 3-6s latency is normal — professional human
+// interpreters work at similar delays.
 
 let audioContext = null;
 let analyser = null;
@@ -1926,7 +1911,6 @@ async function startRecording() {
     lastSentText = '';
     sentFinalCount = 0;   // new session → results array restarts at index 0
     lastFinalAt = Date.now();
-    startFinalFlushWatcher();
     document.getElementById('mute-btn').classList.add('enabled');
     document.getElementById('mute-btn').classList.remove('muted');
     document.getElementById('mic-btn').classList.add('recording');
@@ -1943,9 +1927,6 @@ async function startRecording() {
 
   recognition.onresult = (e) => {
     let interim = '';
-    // Walk ALL results. Send each FINAL result exactly once, tracked by index.
-    // This is immune to Chrome re-firing onresult with the same resultIndex,
-    // which was causing the duplicate-everything problem.
     for (let i = 0; i < e.results.length; i++) {
       const res = e.results[i];
       if (res.isFinal) {
@@ -1953,15 +1934,14 @@ async function startRecording() {
           const txt = res[0].transcript.trim();
           if (txt) broadcastText(txt);
           sentFinalCount = i + 1;
-          lastFinalAt = Date.now(); // reset flush timer
+          lastFinalAt = Date.now();
         }
       } else {
         interim += res[0].transcript;
       }
     }
-    // Show interim ONLY on the presenter's screen (never sent to attendees)
+    // Show interim on presenter screen (never sent to attendees)
     document.getElementById('interim-text').textContent = interim;
-    if (!interim) document.getElementById('interim-text').textContent = '';
   };
 
   recognition.onerror = (e) => {
@@ -1980,7 +1960,6 @@ async function startRecording() {
   recognition.onend = () => {
     const interimEl = document.getElementById('interim-text');
     if (interimEl) interimEl.textContent = '';
-    // Auto-restart for continuous listening — but NOT if muted (paused on purpose)
     if (isRecording && !mutePaused) {
       try { recognition.start(); } catch(_) {}
     }
@@ -1994,7 +1973,6 @@ function stopRecording() {
   isRecording = false;
   isMuted = false;
   mutePaused = false;
-  stopFinalFlushWatcher();
   if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
   document.getElementById('mic-btn')?.classList.remove('recording');
   document.getElementById('mic-btn-wrap')?.classList.remove('recording');
